@@ -1,0 +1,99 @@
+{% extends "Global/luminous/layout.html.twig" %}
+
+{% set pagetitle = 'Sign in'|trans({}, 'messages') %}
+{% block title %}{{pagetitle}}{% endblock %}
+
+{% block content %}
+    <section class="hero-section">
+        <div class="container">
+            <div class="necesitas-section">
+                <div class="row align-items-center gy-4 justify-content-center">
+                    <div class="col-lg-6 col-12">
+                        <div class="necesitas-title">
+                            <span>Todas las <strong>experiencias</strong> de los <strong>grandes públicos</strong> en un
+                                mismo espacio.</span>
+                        </div>
+                        <div class="necesitas-log-in-image">
+                            <img src="{{ asset('assets/ll_assets/assets/img/Girl Black.png') }}" alt="">
+                        </div>
+                    </div>
+
+                    <div class="col-lg-1"></div>
+
+                    <div class="col-lg-5 col-md-6 col-12">
+                        <div class="panel panel-default">
+                            <div class="necesitas-registration-heading">
+                                <span>Inicia sesión con tu correo y contraseña.</span>
+                            </div>
+                            <div class="panel-body">
+                                {% if services.getSetting("social_login_facebook_enabled") == "yes" or
+                                services.getSetting("social_login_google_enabled") == "yes" %}
+                                <p>
+                                    {% if services.getSetting("social_login_facebook_enabled") == "yes" %}
+                                    <a href="{{ path('hwi_oauth_service_redirect', {'service': 'facebook' }) }}" class="btn btn-block btn-facebook"> <i
+                                            class="fab fa-facebook-f"></i> &nbsp; {{ 'Sign in via Facebook'|trans({}, 'messages') }}</a>
+                                    {% endif %}
+                                    {% if services.getSetting("social_login_google_enabled") == "yes" %}
+                                    <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google' }) }}" class="btn btn-block btn-google-plus"> <i
+                                            class="fab fa-google"></i> &nbsp; {{ 'Sign in via Google'|trans({}, 'messages') }}</a>
+                                    {% endif %}
+                                </p>
+                                <p class="divider-text">
+                                    <span>{{ 'OR'|trans({}, 'messages') }}</span>
+                                </p>
+                                {% endif %}
+                                {% if error %}
+                                {% include "Global/message.html.twig" with { message: (error.messageKey|trans(error.messageData, 'security')), type:
+                                "danger", icon: "fas fa-exclamation-circle" } %}
+                                {% endif %}
+
+                                <form id="Test" class="form-horizontal necesitas-registration-fromd" method="post" action="{{ path('fos_user_security_check') }}">
+
+                                    {% if csrf_token %}
+                                    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+                                    {% endif %}
+
+                                    <div class="form-group">
+                                        <div class="col-md-10 offset-1">
+                                            <label class="control-label">Correo electrónico corporativo</label>
+                                            <input type="text" autocomplete="username" class="form-control" name="_username"
+                                                value="{{ last_username }}" placeholder="Escribe tu correo electrónico">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-10 offset-1">
+                                            <label class="control-label">Contraseña</label>
+                                            <div class=" d-flex login-password">
+
+                                                <input id="password-field" type="password" class="form-control"
+                                                    name="_password" autocomplete="current-password"
+                                                    placeholder="Escribe tu cotrasena">
+
+                                                <span toggle="#password-field"
+                                                    class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {% if app.request.get('_target_path') is not null %}
+                                    <input type="hidden" name="_target_path"
+                                        value="{{ app.request.get('_target_path') }}" />
+                                    {% endif %}
+
+
+                                    <div class="form-group Ingresar-button">
+                                        <div class=" offset-1 login-page">
+                                            <a href="{{path('ll_forget_password')}}">Olvidé mi contraseña</a>
+                                            <button type="submit" class="col-md-10 col-10 btn btn-outline-info">Ingresar</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

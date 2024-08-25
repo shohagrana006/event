@@ -1,0 +1,309 @@
+{% extends "Global/layout.html.twig" %}
+
+{% form_theme form 'Global/jquery.collection.html.twig' %}
+
+{% set pagetitle = 'Add a new event' | trans %}
+
+{% if event.id %}{% set pagetitle = 'Update the event' | trans %}{% endif %}
+
+{% block title %}{{pagetitle}}{% endblock %}
+
+{% block content %}
+
+    {% set navigation = [{ "dashboard_index": ('Dashboard' | trans),  "dashboard_organizer_event": ('My events' | trans), "current":(pagetitle) }] %}
+    {% include "Global/navigation.html.twig" with navigation %}
+
+    <section class="section-content padding-y bg-white {{ "event_add" in app.request.get("_route") ? "add-event" : "edit-event" }}">
+        <div class="{{ services.getSetting("app_layout") }}">
+            <div class="row">
+                <aside class="col-lg-3 pt-3 pt-lg-0">
+                    {% include "Dashboard/sidebar.html.twig" %}
+                </aside>
+                <div class="col-lg-9 mt-4 mt-lg-0">
+                    <div class="card box">
+                        <div class="card-body">
+                            {% include "Global/message.html.twig" with { type: "info", icon: "fas fa-info-circle", message: ("The fields preceded with a red * are mandatory"|trans) } %}
+                            {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': app.request.get("_route") == "event_add" ? "add-event" : "edit-event"}}) }}
+
+                            {{ form_row(form.category) }}
+                            {{ form_row(form.sendevent) }}
+                            {{ form_row(form.sendchanel) }}
+
+                                <div class="cus_form_event">
+                                    <div class="form-group">
+                                        <div class="row justify-content-center">
+                                            <div class="col-md-1">
+                                                <span  class="btn btn-primary">List</span>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <select id="" name="subscriber_id" class="form-control" >
+                                                    {% for subscriber_list in subscriber_lists %}
+                                                        <option value="{{ subscriber_list['id'] }}">{{ subscriber_list['name'] }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <span class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">+</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row justify-content-center mt-4">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Upload CSV</label>
+                                                    {# {% if app.session.get('file_data')['subscriber_file'] is defined %}
+                                                        <input class="form-control" type="file" value="{{ app.session.get('file_data')['subscriber_file'] }}" name="subscriber_file" placeholder="Upload a csv" accept=".csv" />
+                                                    {% else %} #}
+                                                        <input class="form-control" type="file" name="subscriber_file" placeholder="Upload a csv" accept=".csv" />
+                                                    {# {% endif %} #}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <a href="{{path('file_preview_download')}}" class="btn btn-primary mt-4">Demo CSV</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            {{ form_rest(form) }}
+                            {{ form_end(form) }}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">New list</h5>
+                </div>
+                <form action="{{path('dashboard_organizer_event_addlist')}}" method="POST" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <div class="list_form">
+                            <div class="form-group">
+                                <label class="required">Name</label>
+                                <input type="text" name="name" required class="form-control"/>
+                            </div>
+                            <div class="form-group">
+                                <label>Tag (optional)</label>
+                                <input type="text" name="tag" class="form-control"/>
+                            </div>
+                            <div class="form-group">
+                                <label>Description (optional)</label>
+                                <textarea class="form-control" name="description"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script>
+        async function callScript(formValues){
+           try {
+           // Load the external JS file
+                await fetch('{{ asset("assets/ll_assets/assets/js/tracardi.js") }}')
+               .then(response => {
+                   if (!response.ok) {
+                       throw new Error('Network response was not ok');
+                   }
+                   return response.text();
+               })
+               .then(scriptContent => {
+                   const scriptElement = document.createElement('script');
+                   scriptElement.text = scriptContent;
+                   document.body.appendChild(scriptElement);
+               });
+           // Track the event
+                await new Promise((resolve, reject) => {
+                    try {
+                        window.tracker.track('Add event', {
+                            Lead: 'Client',
+                            values: formValues
+                        });
+                        resolve();
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const form = document.getElementById('add-event');
+            if(form){
+                const eventSaveButton = document.getElementById('event_save');
+                if (eventSaveButton) {
+                    eventSaveButton.setAttribute('type', 'button');
+                }
+            }
+        });
+
+        const form = document.getElementById('add-event');
+        console.log(form);
+        const btn = document.getElementById('event_save');
+
+        btn.addEventListener('click', async (event) => {
+            //if(form && form.checkValidity()){
+            if(form){
+            // Prevent form submission
+                event.preventDefault();
+
+                // Collect all input values
+                const formData = new FormData(form);
+                const formValues = {};
+                formData.forEach((value, key) => {
+                    formValues[key] = value;
+                });
+
+                // Log form values to the console
+                console.log(formValues);
+
+                callScript(formValues).then(()=>{
+                    form.submit();
+                    $(document).on('submit', 'form[name="event"]', function () {
+                            $('form[name="event"]').find('fieldset').prop('disabled', false);
+                        });
+                });
+            } else {
+                //if(form.checkValidity()){
+                    form.submit();
+                    $(document).on('submit', 'form[name="event"]', function () {
+                        $('form[name="event"]').find('fieldset').prop('disabled', false);
+                    });
+                //}else{
+                //    form.reportValidity();
+                //}
+            }
+        });
+
+        $(document).ready(function () {
+            {% if event.id %}
+                {% for eventDate in event.eventdates if eventDate.payoutRequested %}
+                    $('.event-date-reference').each(function () {
+                        if ($(this).val() == "{{eventDate.reference}}") {
+                            $(this).closest("fieldset").prop('disabled', true);
+                            $(this).closest("fieldset").prepend('<p class="alert alert-danger alert-icon"><i class="fas fa-exclamation-circle"></i> {{ "This event date is locked because a payout request has been submitted"|trans }}</p>');
+                        }
+                    });
+                {% endfor %}
+                {% for eventDate in event.eventdates %}
+                    {% for eventDateTicket in eventDate.tickets if eventDateTicket.isOnSale and eventDateTicket.getOrderElementsQuantitySum() > 0 %}
+                            $('.event-date-ticket-reference').each(function () {
+                                if ($(this).val() == "{{eventDateTicket.reference}}") {
+                                    $(this).closest("fieldset").find('.event-date-ticket-quantity').trigger("touchspin.updatesettings", {min: {{ eventDateTicket.getOrderElementsQuantitySum() }}});
+                                    $(this).closest("fieldset").find('.event-date-ticket-quantity').attr("data-min", {{ eventDateTicket.getOrderElementsQuantitySum() }});
+                                }
+                            });
+                    {% endfor %}
+                {% endfor %}
+            {% endif %}
+
+            $(document).on('submit', 'form[name="event"]', function () {
+                $('form[name="event"]').find('fieldset').prop('disabled', false);
+            });
+
+             $(document).on("change", ".is-event-date-online input[type=radio]", function () {
+                if (this.value == 1) {
+                    $(this).closest('.form-group').next('.form-group').find(".event-date-venue").attr('required',false);
+                } else {
+                    $(this).closest('.form-group').next('.form-group').find(".event-date-venue").attr('required',true);
+                }
+            });
+
+            $(document).on("change", ".is-ticket-free-radio input[type=radio]", function () {
+                if (this.value == 1) {
+                    $(this).closest('.form-group').next('.form-group').find(".event-date-ticket-price").attr('required',false);
+                } else {
+                    $(this).closest('.form-group').next('.form-group').find(".event-date-ticket-price").attr('required',true);
+                }
+            });
+
+
+
+        });
+    </script>
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Select the radio buttons for the communication channel
+            var sendChannelRadios = document.querySelectorAll('.custom-control-input[name="event[sendchanel]"]');
+
+            // Select the WhatsApp number field
+            var whatsappNumberField = document.getElementById('event_whatsapp_number'); // Assuming 'event_whatsapp_number' is the ID of the WhatsApp number field
+
+            // Hide the WhatsApp number field by default
+            whatsappNumberField.style.display = 'none';
+
+            // Add event listener to each radio button
+            sendChannelRadios.forEach(function(radio) {
+                radio.addEventListener('change', function() {
+                    // Check if the selected value is 'whatsapp'
+                    if (this.value === '0') { // Assuming '0' is the value for 'WhatsApp'
+                        // If 'whatsapp' is selected, show the WhatsApp number field
+                        whatsappNumberField.style.display = '';
+                    } else {
+                        // If 'email' or any other option is selected, hide the WhatsApp number field
+                        whatsappNumberField.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Select the WhatsApp number field
+            var whatsappNumberField = document.getElementById('event_whatsapp_number');
+
+            // Select the label associated with the WhatsApp number field
+            var whatsappNumberLabel = document.querySelector('label[for="event_whatsapp_number"]');
+
+            // Initially hide the WhatsApp number field and its label
+            whatsappNumberField.style.display = 'none';
+            whatsappNumberLabel.style.display = 'none';
+
+            // Select the radio buttons for the communication channel
+            var sendChannelRadios = document.querySelectorAll('.custom-control-input[name="event[sendchanel]"]');
+
+            // Add event listener to each radio button
+            sendChannelRadios.forEach(function(radio) {
+                radio.addEventListener('change', function() {
+                    // Check if the selected value is 'whatsapp'
+                    if (this.value === '0') { // Assuming '0' is the value for 'WhatsApp'
+                        // If 'whatsapp' is selected, show the WhatsApp number field and its label
+                        whatsappNumberField.style.display = '';
+                        whatsappNumberLabel.style.display = '';
+                    } else {
+                        // If 'email' or any other option is selected, hide the WhatsApp number field and its label
+                        whatsappNumberField.style.display = 'none';
+                        whatsappNumberLabel.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+    </script>
+
+
+
+
+{% endblock %}

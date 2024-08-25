@@ -1,0 +1,306 @@
+{% extends "Global/layout.html.twig" %}
+
+{% set pagetitle = 'Train attachment Bot' | trans %}
+
+
+{% block title %}{{ pagetitle }}{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .chatbot-attach{
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .chatbot-attach a{
+            position: absolute;
+            right: 0px;
+            top: 0px;
+        }
+
+        .trained-chatbot-list-drop{
+            padding-right: 18px !important;
+            padding-left: 18px !important;
+            background-color: #f1f3f7;
+            border-radius: 5px;
+            padding-top: 13px;
+            color: #8898aa;
+            padding-bottom: 13px;
+        }
+
+        .dropdown-item{
+            display: flex;
+            justify-content: space-between;
+            gap: 3px;
+        }
+
+
+        .embed_style {
+            padding: 10px;
+            background-color: #444;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #ddd;
+            font-weight: 500;
+        }
+
+        #copy-button {
+            position: absolute;
+            top: 34px;
+            right: 17px;
+            padding: 8px 15px;
+            background-color: #18191a;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    {% set navigation = [{"dashboard_index": "Dashboard"|trans,"current":(pagetitle)}] %}
+    {% include "Global/navigation.html.twig" with navigation %}
+
+    <section class="section-content padding-y bg-white">
+        <div class="{{ services.getSetting("app_layout") }}">
+            <div class="row">
+                <aside class="col-lg-3 pt-3 pt-lg-0">
+                    {% include "Dashboard/sidebar.html.twig" %}
+                </aside>
+                <div class="col-lg-9 mt-4 mt-lg-0">
+
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 border-md-left border-sm-top">
+                                    <form action="" method="GET" >
+                                        <div class="row mb-4">
+                                            
+                                                <div class="col-md-4">
+                                                    <label for="search">Search:</label>
+                                                    <input type="text" id="search" name="search" value="{{ app.request.query.get('search') }}" class="form-control" placeholder="Search...">
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <label for="perPage">Items per page:</label>
+                                                    <select class="form-control" name="perPage" id="perPageSelect">
+                                                        <option disabled>Select an option....</option>
+                                                        <option value="5" {% if perPage == 5 %} selected {% endif %}>5</option>
+                                                        <option value="10" {% if perPage == 10 %} selected {% endif %}>10</option>
+                                                        <option value="20" {% if perPage == 20 %} selected {% endif %}>20</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button type="submit" class="btn btn-success mt-4 rounded">Apply</button>
+                                                </div>
+                                            
+
+                                                <div class="col-md-2 mt-4 ">
+                                                    <div class="text-right ">
+                                                        <a href="{{ path('add_chatbot_train_attachment') }}" class="btn btn-primary rounded">+ Add new</a>
+                                                    </div>
+                                                </div>
+
+                                           
+                                        </div>
+                                    </form>
+
+
+                                    <table class="table" id="data">
+                                        <thead style="background: #eeeeee;">
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col" class="text-center">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                         {% if chat_bot_lists|length > 0 %}
+                                            {% for chat_bot_list in chat_bot_lists %}
+                                                <tr>
+                                                    <th scope="row">{{ chat_bot_list['custom_name'] ??  chat_bot_list['chatbot_name']}}</th>
+                                                    <td class="text-right">
+
+                                                       <a href="{{ path(chat_bot_list['type'] == 'text' ? 'retrain_chatbot_train_text' : 'retrain_chatbot_train_attachment', { chatbotId: chat_bot_list['chatbot_id'] }) }}" class="delete_chatbot_btn btn btn-danger btn-sm">re-train</a>
+
+                                                        <button type="button" id="openChatbox" class="btn btn-success btn-sm data_template_id" data-template-id="{{ chat_bot_list.chatbot_id }}">Show chat</button>
+                                                        <button type="button" class="btn btn-info embed_btn btn-sm" data-template-id="{{ chat_bot_list.chatbot_id }}">Embed code</button>
+                                                        <a onclick="return confirm('Are you sure to delete this?')" href="{{ path('delete_chatbot_list', { chatbotId: chat_bot_list['chatbot_id'] }) }}" class="delete_chatbot_btn btn btn-danger btn-sm" data-id="{{ chat_bot_list['id'] }}">X</a>
+
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+
+                                        {% else %}
+                                            <tr>
+                                                <td class="text-center" colspan="2">{{ 'Not chatbot found.' }}</td>
+                                            </tr>
+                                        {% endif %}
+                                        </tbody>
+                                    </table>
+
+                                    <div id="pagination" class="d-flex justify-content-end align-items-center" style="gap: .5rem;">
+                                        {% if page > 1 %}
+                                            <a href="?page={{ (page - 1) }}&perPage={{ perPage }}" class="btn btn-primary p-2 rounded">Previous</a>
+                                        {% endif %}
+
+                                        {% if page < totalPages %}
+                                            <a href="?page={{ (page + 1) }}&perPage={{ perPage }}" class="btn btn-primary p-2 rounded">Next</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Chatbot code embed modal -->
+    <div class="modal fade bd-example-modal-lg" id="embed_modal" tabindex="-1" role="dialog" aria-labelledby="embed_modal_title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Embed code in website</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <button id="copy-button" title="Copy">
+                        <svg class="icon" viewbox="0 0 384 512" width="16pt" height="16pt" fill="#98c379">
+                            <path d="M336 64h-80c0-35.3-28.7-64-64-64s-64 28.7-64 64H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM192 40c13.3 0 24 10.7 24 24s-10.7 24-24 24-24-10.7-24-24 10.7-24 24-24zm121.2 231.8l-143 141.8c-4.7 4.7-12.3 4.6-17-.1l-82.6-83.3c-4.7-4.7-4.6-12.3.1-17L99.1 285c4.7-4.7 12.3-4.6 17 .1l46 46.4 106-105.2c4.7-4.7 12.3-4.6 17 .1l28.2 28.4c4.7 4.8 4.6 12.3-.1 17z"></path>
+                        </svg>
+                    </button>
+                    <pre>
+                        <div class="embed_style">
+                            <code id="chatbot_code"></code>
+                        </div>
+                    </pre>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+
+    <script type="module">
+        import Chatbot from "{{chatbot_flowise}}";
+        $(document).on('click', '.data_template_id', function () {
+            var value = $(this).attr('data-template-id');
+            Chatbot.init({
+                chatflowid: value,
+                apiHost: "{{ api_host }}",
+            });
+        })
+    </script>
+
+    <script>
+        $(document).ready(function(){
+            // embed code script
+            $(document).on('click', '.embed_btn', function(){
+                var value = $(this).attr('data-template-id');
+                $('#chatbot_code').html(`
+    &lt;script type="module"&gt;
+        import Chatbot from "{{chatbot_flowise}}";
+        Chatbot.init({
+            chatflowid: "${value}",
+            apiHost: "{{ api_host }}",
+        });
+    &lt;/script&gt;
+                `)
+                $('#embed_modal').modal('show')
+            })
+
+
+            // copy code by copy button
+            $('#copy-button').on('click',function(){
+                const codeElement = document.getElementById('chatbot_code');
+                const range = document.createRange();
+                range.selectNode(codeElement);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+
+                // Copy the selected text to the clipboard
+                try {
+                    document.execCommand('copy');
+                    alert('Code copied to clipboard!');
+                } catch (err) {
+                    console.error('Unable to copy', err);
+                }
+
+                // Remove the selection
+                window.getSelection().removeAllRanges();
+            })
+        })
+    </script>
+<script>
+{# function loadScript(){
+
+    !function(t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define([],t):("undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this).tracardi=t()}(function(){return function r(o,i,a){function c(e,t){if(!i[e]){if(!o[e]){var n="function"==typeof require&&require;if(!t&&n)return n(e,!0);if(d)return d(e,!0);throw(n=new Error("Cannot find module '"+e+"'")).code="MODULE_NOT_FOUND",n}n=i[e]={exports:{}},o[e][0].call(n.exports,function(t){return c(o[e][1][t]||t)},n,n.exports,r,o,i,a)}return i[e].exports}for(var d="function"==typeof require&&require,t=0;t<a.length;t++)c(a[t]);return c}({1:[function(t,e,n){"use strict";!function(t){t=t||window;var n=[],r=!1,o=!1;function i(){if(!r){r=!0;for(var t=0;t<n.length;t++)n[t].fn.call(window,n[t].ctx);n=[]}}function a(){"complete"===document.readyState&&i()}t.documentReady=function(t,e){if("function"!=typeof t)throw new TypeError("callback for documentReady(fn) must be a function");r?setTimeout(function(){t(e)},1):(n.push({fn:t,ctx:e}),"complete"===document.readyState||!document.attachEvent&&"interactive"===document.readyState?setTimeout(i,1):o||(document.addEventListener?(document.addEventListener("DOMContentLoaded",i,!1),window.addEventListener("load",i,!1)):(document.attachEvent("onreadystatechange",a),window.attachEvent("onload",i)),o=!0))}}(window);var r=[];window.tracker||(window.tracker={}),window.response||(window.response={context:{}}),window.onTracardiReady={bind:function(t){"function"==typeof t&&r.push(t)},call:function(e){r.forEach(function(t){t(e)})}},function(){for(var n=[],r="liliput.min.js",t=["track"],e=0;e<t.length;e++){var o=t[e];window.tracker[o]=function(e){return function(){var t=Array.prototype.slice.call(arguments);return t.unshift(e),n.push(t),window.tracker}}(o)}function i(){if(console.debug("[Loader] Rerun callbacks."),void 0!==window.tracardi.default)if(window.tracardi.default.getState().plugins.tracardi.initialized)for(window.tracker=window.tracardi.default;0<n.length;){var t=n.shift(),e=t.shift();tracker[e]&&tracker[e].apply(tracker,t)}else console.error("[Loader] Callbacks stopped. Tracker not initialized.");else console.error("[Loader] Callbacks stopped. Tracker not initialized. Is script url correct?")}documentReady(function(){var t,e,n;"1"!==navigator.doNotTrack||!0!==(null===(t=options)||void 0===t||null===(e=t.tracker)||void 0===e||null===(n=e.settings)||void 0===n?void 0:n.respectDoNotTrack)?((e=document.createElement("script")).type="text/javascript",e.async=!0,void 0!==options.tracker||void 0!==options.tracker.url||void 0!==options.tracker.url.script?(null!==options.tracker.url.script?options.tracker.url.script.startsWith("http")||options.tracker.url.script.startsWith("//")?e.src=options.tracker.url.script+"/"+r:e.src=options.tracker.url.script:e.src=r,console.debug("[Loader] Loading: "+e.src),e.addEventListener?e.addEventListener("load",function(t){i()},!1):e.onreadystatechange=function(){"complete"!==this.readyState&&"loaded"!==this.readyState||i(window.event)},(n=document.getElementsByTagName("script")[0]).parentNode.insertBefore(e,n)):console.error("[Loader] Undefined options.tracker.url.script. This url defines location of tracker code.")):console.log("We are respecting do not track setting. Tracardi disabled.")})}()},{}]},{},[1])(1)});
+
+    var options = {
+        tracker: {
+            url: {
+                // This is url to tracardi backend. Please mind the correct port.
+                script: 'https://stg-bdp-api.keos.co/tracker',
+                api: 'https://stg-bdp-api.keos.co'
+            },
+            source: {
+                id: "0bfb6914-bd7a-4d46-a41a-8592e9ef3520"
+            }
+            // Please see the documentation for more settings: http://docs.tracardi.com/integration/js-integration/
+        }
+    }
+
+} #}
+
+    document.addEventListener('DOMContentLoaded', function() {
+        function sendTrack(){
+            if(window.tracker){
+                var text = '';
+                console.log(document.querySelectorAll('.chatbot-button'));
+                document.querySelectorAll('.chatbot-button').forEach(function(button) {
+                    button.addEventListener('click', function () {
+                        var container = button.closest('div');
+                        var textarea = container.querySelector('textarea');
+                        
+                        if (textarea) {
+                            text = textarea.value;
+                            console.log('Textarea value:', text);
+                        } else {
+                            console.log('Textarea not found');
+                        }
+                       // loadScript();
+                       // window.tracker.track('Send chat', {
+                         //   Type: 'Click',
+                           // Action: 'Attendee',
+                           // text: text
+                        //});
+                    });
+                });
+            } else {
+                console.error('Tracker not initialized');
+            }
+        }
+
+        document.getElementById('openChatbox').addEventListener('click', function() {
+            console.log('clicked');
+             setTimeout(sendTrack, 3000);
+
+              window.tracker.track('Open chat', {
+                    Type: 'Click',
+                    Action: 'Open chat',
+                });
+        });
+    });
+</script>
+{% endblock %}

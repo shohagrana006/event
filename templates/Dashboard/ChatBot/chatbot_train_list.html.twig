@@ -1,0 +1,126 @@
+{% extends "Global/layout.html.twig" %}
+
+{% set pagetitle = 'Train Text Bot' | trans %}
+
+{% block title %}{{ pagetitle }}{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .chatbot-attach{
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .chatbot-attach a{
+            position: absolute;
+            right: 0px;
+            top: 0px;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+
+    {% set navigation = [{"dashboard_index": "Dashboard"|trans,"current":(pagetitle)}] %}
+    {% include "Global/navigation.html.twig" with navigation %}
+
+    <section class="section-content padding-y bg-white">
+        <div class="{{ services.getSetting("app_layout") }}">
+            <div class="row">
+                <aside class="col-lg-3 pt-3 pt-lg-0">
+                    {% include "Dashboard/sidebar.html.twig" %}
+                </aside>
+                <div class="col-lg-9 mt-4 mt-lg-0">
+                    <div class="card shadow">
+                        <div class="card-body">
+                               
+                            <form action="{{ path('chatbot_train_attachment_store') }}" method="post" enctype="multipart/form-data">
+
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <label>Chatbot</label>
+                                            <select class="form-control" name="bot_select" id="bot_select" required>
+                                                <option value="" disabled selected>Select A Bot</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <label>Description</label>
+                                            <textarea name="text" rows="4" placeholder="Describe whe information contained in the file to be attached for training. For example FAQ, DOcuments containing information about topics, parking,  …" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="form-group attch-parent-chatbot">
+                                            <label>Attachment</label>
+                                            <div class="attach_append">
+                                                <div class="chatbot-attach">
+                                                    <input type="file" name="files" accept=".txt" class="form-control">
+                                                    <a href="javascript:void(0)" class="btn btn-success rounded add_more_btn">+</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-info rounded">Train</button>
+                                        </div>
+                                    </div>
+                                </div>   
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% if app.session.has('chatbotId') %}
+        {% set myData = app.session.get('chatbotId') %}
+        {% do app.session.remove('chatbotId') %}
+
+        <script type="module">
+            import Chatbot from "https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js";
+            Chatbot.init({
+                chatflowid: "{{ myData | escape('js') }}",
+                apiHost: "https://a056-2a01-4ff-f0-dc64-00-1.ngrok-free.app",
+            });
+        </script>
+    {% endif %}
+
+
+{% endblock %}
+
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function(){
+            $('.add_more_btn').click(function(){
+                $('.attach_append').append(`
+                   <div class="chatbot-attach mt-3">
+                        <input type="file" name="file[]" accept=".txt" class="form-control">
+                        <a href="javascript:void(0)" class="btn btn-danger rounded remove_btn">-</a>
+                    </div>
+                `)
+            })
+
+
+            $(document).on('click', '.remove_btn', function(){
+                $(this).parent().remove()
+            })
+        })
+    </script>
+{% endblock %}

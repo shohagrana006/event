@@ -1,0 +1,184 @@
+@media screen and (max-width: 991px) {
+    .header-list-item ul{
+        display: none;
+    }
+
+    .mobile-menu button {
+        display: block;
+        color: white;
+        font-size: 22px;
+    }
+
+    .personalizarle-title h2{
+        font-size: 45px;
+    }
+    
+    .personalizarle-title p{
+        font-size: 20px;
+    }
+
+    .hero-section-content h2{
+        font-size: 40px;
+    }
+
+
+    .main-footer-section{
+        flex-direction: column;
+        gap: 30px;
+        text-align: center;
+    }
+    
+    .wrapper-footer{
+        flex-direction: column;
+        gap: 30px;
+        text-align: center;
+    }
+
+    .temas-card{
+        margin-top: 65px;
+    }
+
+    section.personalizarle-section{
+        margin-top: 100px;
+    }
+
+    .pixeles-item-section {
+        margin-top: 65px;
+    }
+
+    .pixeles-item-section{
+        padding-top: 50px;
+    }
+
+    .registration-section{
+        margin-top: 50px;
+    }
+    .pixeles-items{
+        gap: unset;
+    }
+
+   
+    .wrapper-eventos-necesitan .row{
+        flex-direction: column;
+    }
+
+    p.hero-section-paragraph{
+        font-size: 19px;
+    }
+    
+    .fieldInput .form-submit{
+        width: 35%;
+    }
+
+    .eventos-necesitan-item-card.wrapper-eventos-item{
+        right: unset;
+        top: unset;
+    }
+
+    .eventos-necesitan-item-card.third-child{
+        min-width: unset;
+        margin-top: 25px !important;
+    }
+
+    .eventos-necesitan-item-card.inner-wrapper-eventos-item{
+        bottom: unset;
+        right: unset;
+    }
+
+}
+
+@media screen and (max-width: 767px) {
+
+    .registration-title h3{
+        font-size: 27px;
+    }
+
+    .registration-title p{
+        font-size: 20px;
+    }
+    
+    .main-registration-form{
+        flex-direction: column;
+        gap: 0px;
+        text-align: center;
+    }
+
+    .registration-title{
+        max-width: unset;
+    }
+
+    .hero-section-image{
+        margin-left: 20px;
+    }
+
+
+    .Potencia-title h2{
+        font-size: 35px;
+    }
+
+    .main-Potencia-email-marketing{
+        flex-direction: column;
+    }
+
+    .envia-los-heading h2{
+        font-size: 45px;
+    }
+
+    .eventos-inteligente-heading h2{
+        font-size: 50px;
+    }
+
+    .eventos-necesitan-content strong{
+        font-size: 50px;
+    }
+    .recoverpassword-button button{
+        width: 100%;
+    }
+}
+
+
+@media screen and (max-width: 575px) {
+    .Potencia-content span{
+        font-size: 20px;
+    }
+
+    .pracing-title h1{
+        font-size: 45px;
+    }
+}
+
+
+@media screen and (max-width: 450px) {
+    .footer-image{
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .personalizarle-title h2{
+        font-size: 40px;
+    }
+
+    .Potencia-content span{
+        font-size: 17px;
+    }
+
+    .hero-section-content h2{
+        font-size: 30px;
+    }
+
+    p.hero-section-paragraph{
+        font-size: 16px;
+    }
+
+    .categorias-headign h2{
+        font-size: 45px;
+    }
+
+    .eventos-inteligente-heading h2{
+        font-size: 30px;
+    }
+
+    .eventos-inteligente-card-item h4{
+        font-size: 25px;
+    }
+}

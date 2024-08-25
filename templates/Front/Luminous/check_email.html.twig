@@ -1,0 +1,46 @@
+{% extends "Global/luminous/layout.html.twig" %}
+
+{% set pagetitle = 'registration.check_email'|trans({'%email%': user.email}) %}
+{% block title %}{{pagetitle}}{% endblock %}
+
+{% block content %}
+    <section class="check-maile-main">
+            <div class="container">
+                <div class="forget-password-section">
+                    <div class="forget-pass-heading">
+                        <h2>¿Olvidaste tu contraseña?</h2>
+                    </div>
+                    <div class="row forget-password-main align-items-center gy-4 justify-content-center">
+                        <div class="col-lg-5 col-12">
+                            <div class="necesitas-log-in-image">
+                                <img src="{{ asset('assets/ll_assets/assets/img/forget-password-image.png') }}" alt="">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2"></div>
+
+                        <div class="col-lg-5 col-md-10 col-12">
+                            <div class="panel check-maile-panel-default">
+                                <div class="check-maile-image">
+                                    <img src="{{ asset('assets/ll_assets/assets/img/IconCheck@2x.png') }}" width="25%" alt="">
+                                </div>
+                                <div class="check-maile-heading">
+                                    <h3>Revisa tu correo</h3>
+                                </div>
+                                <div class="check-maile-pagraph">
+                                    <p class="text-center"><i style="font-size: 30px;" class="fas fa-envelope-open-text fa-8x text-success"></i></p>
+                                    <!-- <h3 class="text-center">{{ 'registration.check_email'|trans({'%email%': user.email}) }}</h3> -->
+                                    <p class="text-center">Se ha enviado un correo electrónico a {{ user.email }}. Contiene un enlace de activación en el que debe hacer clic
+                                    para activar su cuenta.</p>
+                                </div>
+                                <!-- <div class="checkmaile-button">
+                                    <p>¿No recibiste un correo ?</p>
+                                    <button class="col-md-10 col-10 btn btn-outline-info">Reenviar correo</button>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+{% endblock %}

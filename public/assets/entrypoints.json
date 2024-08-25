@@ -1,0 +1,184 @@
+{
+  "entrypoints": {
+    "app": {
+      "js": [
+        "/assets/runtime.5b7a9943.js",
+        "/assets/0.01fae393.js",
+        "/assets/1.39211bc7.js",
+        "/assets/app.3904d85a.js"
+      ],
+      "css": [
+        "/assets/app.4ef23421.css"
+      ]
+    },
+    "app.orange": {
+      "js": [
+        "/assets/runtime.5b7a9943.js",
+        "/assets/app.orange.56c252e4.js"
+      ],
+      "css": [
+        "/assets/app.orange.c53e3961.css"
+      ]
+    },
+    "app.lightblue": {
+      "js": [
+        "/assets/runtime.5b7a9943.js",
+        "/assets/app.lightblue.abaf9bd1.js"
+      ],
+      "css": [
+        "/assets/app.lightblue.4230c1bc.css"
+      ]
+    },
+    "app.darkblue": {
+      "js": [
+        "/assets/runtime.5b7a9943.js",
+        "/assets/app.darkblue.cf468575.js"
+      ],
+      "css": [
+        "/assets/app.darkblue.0079d450.css"
+      ]
+    },
+    "app.yellow": {
+      "js": [
+        "/assets/runtime.5b7a9943.js",
+        "/assets/app.yellow.03b684ab.js"
+      ],
+      "css": [
+        "/assets/app.yellow.9381fbe7.css"
+      ]
+    },
+    "app.purple": {
+      "js": [
+        "/assets/runtime.5b7a9943.js",
+        "/assets/app.purple.be976463.js"
+      ],
+      "css": [
+        "/assets/app.purple.11df16cc.css"
+      ]
+    },
+    "app.pink": {
+      "js": [
+        "/assets/runtime.5b7a9943.js",
+        "/assets/app.pink.15e94384.js"
+      ],
+      "css": [
+        "/assets/app.pink.f1d63f7f.css"
+      ]
+    },
+    "app.red": {
+      "js": [
+        "/assets/runtime.5b7a9943.js",
+        "/assets/app.red.f07c5e23.js"
+      ],
+      "css": [
+        "/assets/app.red.667ba199.css"
+      ]
+    },
+    "app.green": {
+      "js": [
+        "/assets/runtime.5b7a9943.js",
+        "/assets/app.green.4eb89f23.js"
+      ],
+      "css": [
+        "/assets/app.green.04f84af9.css"
+      ]
+    },
+    "app.dark": {
+      "js": [
+        "/assets/runtime.5b7a9943.js",
+        "/assets/app.dark.5536b804.js"
+      ],
+      "css": [
+        "/assets/app.dark.38ef6d3a.css"
+      ]
+    },
+    "app.fr": {
+      "js": [
+        "/assets/runtime.5b7a9943.js",
+        "/assets/0.01fae393.js",
+        "/assets/app.fr.7746a2f2.js"
+      ],
+      "css": [
+        "/assets/app.fr.8a359927.css"
+      ]
+    },
+    "app.es": {
+      "js": [
+        "/assets/runtime.5b7a9943.js",
+        "/assets/0.01fae393.js",
+        "/assets/app.es.a3b0d08b.js"
+      ],
+      "css": [
+        "/assets/app.es.2bad589c.css"
+      ]
+    },
+    "app.ar": {
+      "js": [
+        "/assets/runtime.5b7a9943.js",
+        "/assets/0.01fae393.js",
+        "/assets/app.ar.4e59b7ee.js"
+      ],
+      "css": [
+        "/assets/app.ar.db5ace71.css"
+      ]
+    },
+    "app.de": {
+      "js": [
+        "/assets/runtime.5b7a9943.js",
+        "/assets/0.01fae393.js",
+        "/assets/app.de.b15baba4.js"
+      ],
+      "css": [
+        "/assets/app.de.833f2960.css"
+      ]
+    },
+    "app.pt": {
+      "js": [
+        "/assets/runtime.5b7a9943.js",
+        "/assets/0.01fae393.js",
+        "/assets/app.pt.f5ea215e.js"
+      ],
+      "css": [
+        "/assets/app.pt.f3a558aa.css"
+      ]
+    },
+    "events": {
+      "js": [
+        "/assets/runtime.5b7a9943.js",
+        "/assets/0.01fae393.js",
+        "/assets/1.39211bc7.js",
+        "/assets/events.4f48c419.js"
+      ],
+      "css": [
+        "/assets/events.a310bb0c.css"
+      ]
+    },
+    "event": {
+      "js": [
+        "/assets/runtime.5b7a9943.js",
+        "/assets/0.01fae393.js",
+        "/assets/1.39211bc7.js",
+        "/assets/event.ca687d1c.js"
+      ]
+    },
+    "organizerprofile": {
+      "js": [
+        "/assets/runtime.5b7a9943.js",
+        "/assets/0.01fae393.js",
+        "/assets/1.39211bc7.js",
+        "/assets/organizerprofile.0be0cbb7.js"
+      ]
+    },
+    "installer": {
+      "js": [
+        "/assets/runtime.5b7a9943.js",
+        "/assets/0.01fae393.js",
+        "/assets/1.39211bc7.js",
+        "/assets/installer.dd2ebe66.js"
+      ],
+      "css": [
+        "/assets/installer.3d1b6b4d.css"
+      ]
+    }
+  }
+}

@@ -1,0 +1,151 @@
+{% extends "Global/layout.html.twig" %}
+
+{% set pagetitle = 'Edit your organizer profile' | trans %}
+
+{% block title %}{{pagetitle}}{% endblock %}
+
+{% block stylesheets %}
+
+    <style>
+        .zoom_section h5{
+            margin-bottom: 25px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+
+    {% set navigation = [{ "dashboard_index": ('Dashboard' | trans), "current":(pagetitle) }] %}
+    {% include "Global/navigation.html.twig" with navigation %}
+
+    <section class="section-content padding-y bg-white">
+        <div class="{{ services.getSetting("app_layout") }}">
+            <div class="row">
+                <aside class="col-lg-3 pt-3 pt-lg-0">
+                    {% include "Dashboard/sidebar.html.twig" %}
+                </aside>
+                <div class="col-lg-9 mt-4 mt-lg-0">
+                    <div class="card box">
+                        <div class="card-body">
+
+                            {% include "Global/message.html.twig" with { type: 'info', icon: 'fas fa-info-circle', message: ('<a href="'~ path('organizer', {'slug': app.user.organizer.slug}) ~'">' ~ 'Click here'|trans ~ '</a> ' ~ 'to preview your profile'|trans) } %}
+
+                            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                            {{ form_widget(form) }}
+                            {{ form_end(form) }}
+                        </div>
+                    </div>
+
+
+                    <div class="zoom_section mt-4">
+                        <h4>Zoom Meeting Manager</h4>
+                        <div class="card box mt-1">
+                            <div class="card-body">
+                                <h5>Zoom api setting</h5>
+                                <div class="zoom_form mt-2">
+
+                                    <form action="{{path('zoom_api_setting')}}" method="post"  enctype="multipart/form-data">
+                                        <div style="border: 1px solid #ddd; padding: 15px">
+                                            <h5 style="font-weight: 700; margin-bottom: 15px; "> Server to server credential for create meeting </h5>
+                                            <div class="form-group">
+                                                <label class="required">Account Id</label>
+                                                <input type="text" value="{{ zoom_data['zoom_account_id']??''}}" name="zoom_account_id" required="required" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="required">Client Id</label>
+                                                <input type="text" value="{{ zoom_data['zoom_client_id']??''}}" name="zoom_client_id" required="required" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="required">Client Secret</label>
+                                                <input type="text" value="{{ zoom_data['zoom_client_secret']??''}}" name="zoom_client_secret" required="required" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div style="border: 1px solid #ddd; padding: 15px; margin-top:15px;">
+                                           <h5 style="font-weight: 700; margin-bottom: 15px; "> General app credential for open meeting </h5>
+                                            <div class="form-group">
+                                                <label class="required">Client SDK Key</label>
+                                                <input type="text" value="{{ zoom_data['sdk_key']??''}}" name="sdk_key" required="required" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="required">Client SDK Secret</label>
+                                                <input type="text" value="{{ zoom_data['sdk_secret']??''}}" name="sdk_secret" required="required" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group mt-3">
+                                            <button class="btn btn-primary">Save</button>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="zoom_section mt-4">
+                        <h4>Google Meeting Manager</h4>
+                        <div class="card box mt-1">
+                            <div class="card-body">
+                                <h5>Google api setting</h5>
+                                <div class="zoom_form mt-2">
+
+                                    <form action="{{path('google_api_setting')}}" method="post"  enctype="multipart/form-data">
+                                        
+                                        <div class="form-group">
+                                            <label class="required">Google Calendar Id</label>
+                                            <input type="text" value="{{ google_data['google_calendar_id']??''}}" name="google_calendar_id" required="required" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="required">Credential File</label>
+                                            <input type="file" name="google_filename" required="required"  class="form-control" accept=".json">
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <button class="btn btn-primary">Save</button>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                     <div class="zoom_section mt-4">
+                        <h4>Teams Meeting Manager</h4>
+                        <div class="card box mt-1">
+                            <div class="card-body">
+                                <h5>Teams api setting</h5>
+                                <div class="zoom_form mt-2">
+
+                                    <form action="{{path('teams_api_setting')}}" method="post"  enctype="multipart/form-data">
+                                        <div class="form-group">
+                                            <label class="required">Client Id</label>
+                                            <input type="text" value="{{ teams_data['teams_client_id']??''}}" name="teams_client_id" required="required" class="form-control">
+                                        </div>
+                                       
+                                        <div class="form-group">
+                                            <label class="required">Client Secret</label>
+                                            <input type="text" value="{{ teams_data['teams_client_secret']??''}}" name="teams_client_secret" required="required" class="form-control">
+                                        </div>
+                                         <div class="form-group">
+                                            <label class="required">Tenant Id</label>
+                                            <input type="text" value="{{ teams_data['teams_tenant_id']??''}}" name="teams_tenant_id" required="required" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-primary">Save</button>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+{% endblock %}

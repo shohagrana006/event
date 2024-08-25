@@ -1,0 +1,41 @@
+parameters:
+  - name: pool_name
+    displayName: agent pool location
+    type: string
+    default: default
+  - name: is_with_analisis
+    displayName: Es con analisis?
+    default: "false"
+    type: boolean
+
+resources:
+  repositories:
+  - repository: templates
+    name: 'Despliegues_Keos/RCAppsPipelinesTemplates'
+    type: git
+    ref: 'refs/heads/feature/devops'
+
+trigger:
+  - development
+  - release
+  - master
+
+pool:
+  name: 'default'
+
+extends:
+  template: templates/azure-pipeline-generico.yml@templates
+  parameters:
+    sonarqube_project_key: 'KeosEventsCX_asdfrtyhjkol23456ghbjk'
+    sonarqube_project_name: 'KeosEventsCX'
+    version_filter: "^1.0.[0-9]{1,3}$"
+    version_file: ./package.json
+    pool_name: ${{parameters.pool_name}}
+    is_with_analisis: ${{parameters.is_with_analisis}}
+    sonarqube_exclusions: ".git,*.yml,*.yaml,assets/**,tests/**"
+    build_jobs: 
+      - job:
+        steps:
+        - script: |
+            echo "aqui se construye el proyecto"
+          displayName: "Construccion del proyecto"

@@ -1,0 +1,204 @@
+{% extends "Global/luminous/layout.html.twig" %}
+{% set pagetitle = 'Take your events to the next level'|trans({}, 'messages') %}
+{% block title %}{{pagetitle}}{% endblock %}
+{% block content %}
+    <section class="hero-section">
+        <div class="container">
+            <div class="necesitas-section">
+                <div class="row align-items-center gy-4 justify-content-center">
+                    <div class="col-lg-6 col-12">
+                        <div class="necesitas-title">
+                            <span>Todas las <strong>experiencias</strong> de los <strong>grandes públicos</strong> en un mismo espacio.</span>
+                        </div>
+                            <div class="necesitas-sign-in-image">
+                                <img src="{{ asset('assets/ll_assets/assets/img/Girl blond.png') }}" alt="">
+                            </div>
+                    </div>
+
+                    <div class="col-lg-1"></div>
+
+                    <!-- <div class="col-lg-6 col-md-6 col-12">
+                        <div class="necesitas-registration-from">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <form class="form-horizontal" method="" action="">
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label">Email</label>
+                                            <div class="col-md-6">
+                                                <input type="email" class="form-control" name="email" value="">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label">Password</label>
+                                            <div class="col-md-6">
+                                                <input id="password-field" type="password" class="form-control"
+                                                    name="password" value="secret">
+                                                <span toggle="#password-field"
+                                                    class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="col-lg-5 col-md-6 col-12">
+                        <div class="panel panel-default">
+                            <div class="necesitas-registration-heading">
+                                <span>Registrate</span>
+                            </div>
+                            <div class="panel-body">
+                                {{ form_start(form, {'method': 'post', 'action': path('ll_signup_organizer'), 'attr': {'novalidate': 'novalidate', class: "form-horizontal necesitas-registration-fromd js_form_validation", id: "fos_user_registration_form"}}) }}
+                                    
+                                {{ form_errors(form) }}
+
+                                
+                                    <div class="form-group">
+                                        <div class="col-md-10 offset-1">
+                                        <label class="control-label">nombre del organizador</label>
+                                            {{ form_widget(form.organizer.name) }}
+                                            {{ form_errors(form.organizer.name) }}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-10 offset-1">
+                                        <label class="control-label">nombre de pila</label>
+                                        {{ form_widget(form.firstname) }}
+                                        {{ form_errors(form.firstname) }}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-10 offset-1">
+                                        <label class="control-label">apellido</label>
+                                        {{ form_widget(form.lastname) }}
+                                        {{ form_errors(form.lastname) }}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-10 offset-1">
+                                        <label class="control-label">nombre de usuario</label>
+                                        {{ form_widget(form.username) }}
+                                        {{ form_errors(form.username) }}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-10 offset-1">
+                                        <label class="control-label">Correo electronico</label>
+                                            {{ form_widget(form.email) }}
+                                            {{ form_errors(form.email) }}
+                                        </div>
+                                    </div>
+
+ 
+                                    <div class="form-group">
+                                        <div class="col-md-10 offset-1">
+                                                <label class="control-label">Contrasena</label>
+                                            <div class=" d-flex  login-password">
+                                                {{ form_widget(form.plainPassword.first) }}
+                                                <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                                            </div>
+                                            {{ form_errors(form.plainPassword.first) }}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-10 offset-1">
+                                                <label class="control-label">Repita la contraseña</label>
+                                            <div class=" d-flex  login-password">
+                                                {{ form_widget(form.plainPassword.second) }}
+                                                {{ form_errors(form.plainPassword.second) }}
+                                                <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {% if services.getSetting('google_recaptcha_enabled') == "yes" %}
+                                    <div class="form-group">
+                                        {{ form_widget(form.recaptcha) }}
+                                        {{ form_errors(form.recaptcha) }}
+                                    </div>
+                                    {% endif %}
+
+
+                                    <div class="form-group Ingresar-button">
+                                        <div class=" offset-1">
+                                            <button type="button" id="submit-button" class="col-md-10 col-10 btn btn-outline-info">crear una cuenta</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-bottom-content">
+                                        <span>?Ya estas registrado? <a href="{{path('ll_signin')}}">acceso</a></span>
+                                    </div>
+
+
+                                {{ form_widget(form._token) }}
+                                {{ form_end(form, {'render_rest': false}) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block push_script %}
+<script>
+  const form = document.getElementById('fos_user_registration_form');
+  console.log(form);
+    const btn = document.getElementById('submit-button');
+
+    btn.addEventListener('click', async (event) => {
+        // Prevent form submission
+        event.preventDefault();
+
+        // Collect all input values
+        const formData = new FormData(form);
+        const formValues = {};
+        formData.forEach((value, key) => {
+            formValues[key] = value;
+        });
+
+        // Log form values to the console
+        console.log(formValues);
+
+        try {
+            // Load the external JS file
+            await fetch('{{ asset("assets/ll_assets/assets/js/tracardi.js") }}')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(scriptContent => {
+                    const scriptElement = document.createElement('script');
+                    scriptElement.text = scriptContent;
+                    document.body.appendChild(scriptElement);
+                });
+
+            // Track the event
+            await new Promise((resolve, reject) => {
+                try {
+                    window.tracker.track('Organizer signup', {
+                        Lead: 'Client',
+                        values: formValues
+                    });
+                    resolve();
+                } catch (error) {
+                    reject(error);
+                }
+            });
+
+            // Submit the form if everything is successful
+            form.submit();
+        } catch (error) {
+            console.error('Error:', error);
+            console.error('An error occurred.');
+        }
+    });
+</script>
+{% endblock %}

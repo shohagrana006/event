@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} | {{ services.getSetting("website_name") }}</title>
+
+
+    <link rel="shortcut icon" href="{{ absolute_url(asset(services.getAppLayoutSettings.getFaviconPath)) }}" />
+    <link rel="stylesheet" href="{{ asset('assets/ll_assets/assets/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/ll_assets/assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/ll_assets/assets/css/owl.carousel.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/ll_assets/assets/css/owl.theme.default.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/ll_assets/assets/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/ll_assets/assets/css/responsive.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/ll_assets/assets/css/ll_layouts.css') }}">
+
+
+</head>
+
+<body>
+    <div class="main">
+        <header class="inner-header-section">
+            <div class="container">
+                <div class="header-section">
+                    <div class="header-wrapper">
+                        <div class="header-logo">
+                            <a href="{{path('ll_home')}}">
+                                <h1>EVENTOS</h1>
+                            </a>
+                        </div>
+
+                        <div class="header-list-item">
+                            <ul class="">
+                                <!-- <li><a href="index.html" class="active">Home</a></li>
+                                <li><a href="planes.html">Planes</a></li> -->
+                                <!-- <li class="language-button">
+                                    <div class="box">
+                                        <a class="language-dropdown-menu" href="#">English
+                                            <i class="fas fa-chevron-down chevron-down"></i></a>
+                                        <a class="language-dropdown-menu" href="#">Bangla</a>
+                                    </div>
+                                </li> -->
+
+                                <li class="language-button-main">
+                                    <div class="language-button-main-up-down">
+                                        <i class="fas fa-chevron-down chevron-down"></i>
+                                    </div>
+                                    <select name="language" id="language"
+                                        class="form-control selectpicker language-dropdown-menu">
+                                        <option value="1">English</option>
+                                        <option value="2">Spanish</option>
+                                    </select>
+                                </li>
+                                <!-- <section class="accordion">
+                                    <div class="tab">
+                                      <input type="checkbox" name="accordion-1" id="cb1" checked>
+                                      <label for="cb1" class="tab__label">English</label>
+                                      <div class="tab__content">
+                                        <p>Espanol</p>
+                                      </div>
+                                    </div>
+                                  </section> -->
+
+
+
+                                <a href="{{path('ll_signin')}}"><button
+                                        class="btn btn-outline-info login-button">Login</button></a>
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button"
+                                        id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Sign Up
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                        <li>
+                                            <a class="dropdown-item" href="{{path('ll_signup_attendee')}}">
+                                                <button class="btn btn-outline-info sign-up-button">Registrarse el asistente</button>
+                                            </a>
+                                        </li>
+
+                                        <li>
+                                             <a class="dropdown-item" href="{{path('ll_signup_organizer')}}">
+                                             <button class="btn btn-outline-info sign-up-button">Registro del organizador</button></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </ul>
+                            <div class="mobile-menu">
+                                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+                                    data-bs-target="#rightOffcanvas" aria-controls="rightOffcanvas">
+                                    <i class="fas fa-bars"></i></button>
+                                <div class="offcanvas offcanvas-end" tabindex="-1" id="rightOffcanvas"
+                                    aria-labelledby="rightOffcanvasLabel">
+                                    <div class="offcanvas-header">
+                                        <h5 class="offcanvas-title" id="rightOffcanvasLabel"></h5>
+                                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="offcanvas-body">
+                                        <div class="mobile-menu-items">
+                                            <span class="mobile-menu-items">
+                                                <a href="{{path('ll_signin')}}" class="active">Home</a>
+                                            </span>
+                                            <!-- <span class="mobile-menu-items">
+                                                <a href="planes.html">Planes</a>
+                                            </span> -->
+                                            <span class="mobile-menu-items menu-selectpicker">
+                                                <select class="selectpicker" data-width="fit">
+                                                    <option
+                                                        data-content='<span class="flag-icon flag-icon-us"></span> English'>
+                                                        English</option>
+                                                    <option
+                                                        data-content='<span class="flag-icon flag-icon-mx"></span> Español'>
+                                                        Español</option>
+                                                </select>
+                                            </span>
+                                            <span class="mobile-menu-items">
+                                                <a href="{{path('ll_signin')}}"><button
+                                                        class="btn btn-outline-info mobile-menu-login-button">Login</button></a>
+                                            </span>
+                                            <span class="mobile-menu-items">
+                                                <a href="{{path('ll_signup_organizer')}}"><button
+                                                        class="btn btn-outline-info mobile-menu-sign-up-button">Organizer
+                                                        Sign Up</button>
+                                                </a>
+                                            </span>
+                                            <span class="mobile-menu-items">
+                                                <a href="{{path('ll_signup_attendee')}}"><button
+                                                        class="btn btn-outline-info mobile-menu-sign-up-button">Attendee
+                                                        Sign Up</button>
+                                                </a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        {% block content %}{% endblock %}
+
+        <footer>
+            <div class="container">
+                <div class="main-footer-section">
+                    <div class="footer-logo">
+                        <img src="{{ asset('assets/ll_assets/assets/img/Icon - footer - keos@2x.png') }}" alt="">
+                    </div>
+                    <div class="footer-list-item">
+                        <ul>
+                            <li><a href="">Productos</a></li>
+                            <li><a href="">Planes</a></li>
+                            <li><a href="">Industria</a></li>
+                            <li><a href="">Eventos</a></li>
+                            <li><a href="">Blogs</a></li>
+                            <li><a href="">Sobre nosotros</a></li>
+                            <li><a href="">Agendar</a></li>
+                            <li><a class="text-underline" href="">Marketplace</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="social-media-icons">
+                        <span>Siguenos en redes</span>
+                        <ul>
+                            <li><a href=""><i class="fab fa-linkedin-in"></i></a></li>
+                            <li><a href=""><i class="fab fa-instagram"></i></a></li>
+                            <li><a href=""><i class="fab fa-facebook-f"></i></a></li>
+                            <li><a href=""><i class="fab fa-youtube"></i></a></li>
+                            <li><a href=""><i class="fab fa-tiktok"></i></a></li>
+                        </ul>
+                    </div>
+                    <!-- <div class="footer-responsive-menu">
+                        <div class="accordion" id="accordionExample">
+                            <div class="accordion-item">
+                              <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                  Footer Menu
+                                </button>
+                              </h2>
+                              <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <div class="footer-list-item">
+                                        <ul>
+                                            <li><a href="">Productos</a></li>
+                                            <li><a href="">Planes</a></li>
+                                            <li><a href="">Industria</a></li>
+                                            <li><a href="">Eventos</a></li>
+                                            <li><a href="">Blogs</a></li>
+                                            <li><a href="">Sobre nosotros</a></li>
+                                            <li><a href="">Agendar</a></li>
+                                            <li><a class="text-underline" href="">Marketplace</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="accordion-item">
+                              <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                  Social Link
+                                </button>
+                              </h2>
+                              <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <div class="social-media-icons">
+                                        <span>Siguenos en redes</span>
+                                        <ul>
+                                            <li><a href=""><i class="fab fa-linkedin-in"></i></a></li>
+                                            <li><a href=""><i class="fab fa-instagram"></i></a></li>
+                                            <li><a href=""><i class="fab fa-facebook-f"></i></a></li>
+                                            <li><a href=""><i class="fab fa-youtube"></i></a></li>
+                                            <li><a href=""><i class="fab fa-tiktok"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+
+                <div class="inner-footer">
+                    <div class="wrapper-footer">
+                        <div class="footer-image">
+                            <span><img class="google-image"
+                                    src="{{ asset('assets/ll_assets/assets/img/google-icon-logo.svg') }}" alt="">Google
+                                <br>Partner</span>
+                            <span><img class="iso-image"
+                                    src="{{ asset('assets/ll_assets/assets/img/iso-27001-information-security.webp') }}"
+                                    alt="">
+                                27001</span>
+                            <span><img class="pci-image"
+                                    src="{{ asset('assets/ll_assets/assets/img/Trazado 978@2x.png') }} " alt=""> DSS
+                                <br>
+                                Certified</span>
+                        </div>
+                        <div class="copyright-content">
+                            <p>Copyright 2023 Todos los derechos reservados</p>
+                        </div>
+                        <div class="politica-content">
+                            <p>Politica de seguridad de informacion</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+
+    <script src="{{ asset('assets/ll_assets/assets/js/jquery-3.6.2.min.js') }}"></script>
+    <script src="{{ asset('assets/ll_assets/assets/js/bootstrap.min.js') }}"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script> -->
+    <script src="{{ asset('assets/ll_assets/assets/js/owl.carousel.min.js') }}"></script>
+    <script src="{{ asset('assets/ll_assets/assets/js/main.js') }}"></script>
+
+
+
+
+
+
+    {% block push_script %}{% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([["app.pink"],{"7bGv":function(n,p,i){},yy7r:function(n,p,i){i("7bGv")}},[["yy7r","runtime"]]]);

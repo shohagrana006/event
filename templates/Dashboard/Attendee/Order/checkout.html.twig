@@ -1,0 +1,657 @@
+{% extends "Global/layout.html.twig" %}
+
+{% set pagetitle = 'Checkout' | trans %}
+
+{% block title %}{{pagetitle}}{% endblock %}
+{% block stylesheets %}
+  <script src="https://beta.hyperswitch.io/v1/HyperLoader.js"></script>
+  <link href="{{ asset("assets/ll_assets/assets/css/hyperswitch.css") }}" rel="stylesheet" />
+
+  <style>
+    .add_guest_info{
+        padding: 3px 10px;
+        color: #fff;
+        font-weight: 600;
+        font-size: 14px;
+    }
+    .guest_info_child{
+        background-color: #ddd;
+        padding: 10px;
+        margin: 10px 0;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+
+    {% set navigation = [{"dashboard_index": "Dashboard"|trans, "dashboard_attendee_cart": ("My cart"|trans), "current":(pagetitle)}] %}
+    {% include "Global/navigation.html.twig" with navigation %}
+
+    <section class="section-content bg-white padding-y">
+
+        <div class="{{ services.getSetting("app_layout") }}">
+
+            <div class="row">
+                <main class="col-lg-8 order-1 order-lg-0 mt-4 mt-lg-0">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="b mb-0">{{ "Order summary"|trans }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover shopping-cart-wrap">
+                                    <thead class="text-muted">
+                                        <tr>
+                                            <th style="width:55%;" scope="col">{{ "Event / Ticket"|trans }}</th>
+                                            <th style="width:15%;" scope="col" width="100">{{ "Price"|trans }}</th>
+                                            <th style="width:15%;" scope="col" width="100">{{ "Quantity"|trans }}</th>
+                                            <th style="width:15%;" scope="col" class="text-right" width="100">{{ "Subtotal"|trans }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% set totalPrice = 0 %}
+                                        {% set currency = services.getSetting('currency_ccy') %}
+
+                                        {% for orderelement in order.orderelements %}
+                                            <tr>
+                                                <td width="55%">
+                                                    {% include "Global/event-preview-horizontal.html.twig" with { eventticket: orderelement.eventticket } %}
+                                                </td>
+                                                <td width="15%">
+                                                    <div class="price-wrap">
+                                                        {% if orderelement.eventticket.eventdate.event.isFree %}
+                                                            <span class="price-new">{{ "Free"|trans }}</span>
+                                                        {% else %}
+                                                            {% if orderelement.eventticket.eventdate %}
+                                                                <span class="price-new">
+                                                                    {{ services.getSetting('currency_position') == 'left' ? services.getSetting('currency_symbol') : '' }}
+                                                                    {{ orderelement.eventticket.getSalePrice }}
+                                                                    {{ services.getSetting('currency_position') == 'right' ? services.getSetting('currency_symbol') : '' }}
+                                                                </span>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    </div>
+                                                </td>
+                                                <td width="15%">
+                                                    {{ orderelement.quantity }}
+                                                </td>
+                                                <td width="15%" class="text-right">
+                                                    <div class="price-wrap">
+                                                        <var class="price">
+                                                            {{ services.getSetting('currency_position') == 'left' ? services.getSetting('currency_symbol') : '' }}
+                                                            {{ orderelement.getPrice }}
+                                                            {{ services.getSetting('currency_position') == 'right' ? services.getSetting('currency_symbol') : '' }}
+                                                        </var>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% set totalPrice = totalPrice + orderelement.getPrice %}
+                                        {% endfor %}
+
+                                        <tr>
+                                            <td colspan="3" class="text-right">Total Price:</td>
+                                            <td class="text-right">
+                                                <div class="price-wrap">
+                                                    <var class="price">
+                                                        {{ services.getSetting('currency_position') == 'left' ? services.getSetting('currency_symbol') : '' }}
+                                                        {{ totalPrice }}
+                                                        {{ services.getSetting('currency_position') == 'right' ? services.getSetting('currency_symbol') : '' }}
+                                                    </var>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    {# <script>
+                    const totalPrice = {{ totalPrice }};
+                    const currency = '{{ currency }}';
+                    const customerId = '{{ app.user.id }}';
+                        console.log('Total Price:', totalPrice);
+                        console.log('currency:', currency);
+                        console.log('Customer ID:', customerId);
+                    </script> #}
+                    {# {{ form_start(form, {'attr': { 'novalidate': 'novalidate', id: 'checkout_form' } }) }} #}
+
+                    {{ form_start(form) }}
+
+                    {{ form_widget(form.orderReference, { value: order.reference }) }}
+
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h6 class="b mb-0">{{ "Billing information"|trans }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-row">
+                            {{ form_widget(form.status) }}
+                                <div class="col form-group">
+                                    {{ form_label(form.firstname) }}
+                                    {{ form_widget(form.firstname, { value: app.user.firstname }) }}
+                                    {{ form_errors(form.firstname) }}
+                                </div>
+                                <div class="col form-group">
+                                    {{ form_label(form.lastname) }}
+                                    {{ form_widget(form.lastname, { value: app.user.lastname }) }}
+                                    {{ form_errors(form.lastname) }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    {{ form_label(form.email) }}
+                                    {{ form_widget(form.email, { value: app.user.email }) }}
+                                    {{ form_errors(form.email) }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+
+                                <div class="col form-group d-none countryOld">
+                                    {{ form_label(form.country) }}
+                                    {{ form_widget(form.country, {'attr': {'class': 'disabled'}}) }}
+                                    {{ form_errors(form.country) }}
+                                </div>
+
+
+                                <div class="col form-group">
+                                    {{ form_label(form.country) }}
+                                    <select name="{{ form.country.vars.full_name }}" id="{{ form.country.vars.id }}" class="form-control">
+                                        <option>Select Country</option>
+                                        {% for choice in form.country.vars.choices %}
+                                            <option value="{{ choice.value }}" {% if choice.value == (payment ? payment.country.id : null) %} selected {% endif %}>
+                                                {{ choice.label }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                    {{ form_errors(form.country) }}
+                                </div>
+
+                                <div class="col form-group">
+                                    {{ form_label(form.state) }}
+                                    {{ form_widget(form.state, { value: app.user.state ?? (payment ? payment.state : null) }) }}
+                                    {{ form_errors(form.state) }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    {{ form_label(form.city) }}
+                                    {{ form_widget(form.city, { value: app.user.city ?? (payment ? payment.city : null) }) }}
+                                    {{ form_errors(form.city) }}
+                                </div>
+                                <div class="col form-group">
+                                    {{ form_label(form.postalcode) }}
+                                    {{ form_widget(form.postalcode, { value: app.user.postalcode ?? (payment ? payment.postalcode:null) }) }}
+                                    {{ form_errors(form.postalcode) }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    {{ form_label(form.street) }}
+                                    {{ form_widget(form.street, { value: app.user.street ?? (payment ? payment.street:null) }) }}
+                                    {{ form_errors(form.street) }}
+                                </div>
+                                <div class="col form-group">
+                                    {{ form_label(form.street2) }}
+                                    {{ form_widget(form.street2, { value: app.user.street2 ?? (payment ? payment.street2:null) }) }}
+                                    {{ form_errors(form.street2) }}
+                                </div>
+                            </div>
+
+
+
+                            {# <div class="form-row">
+                                <div class="col form-group">
+                                    {{ form_label(form.name_on_ticket) }}
+                                    <small id="event_tags_help" class="form-text text-muted mb-3">
+                                        <i class="fas fa-info-circle text-primary mr-1"></i>
+                                        Enter the name on each ticket, one name per one ticket.(press Enter after each name)
+                                    </small>
+                                    {{ form_widget(form.name_on_ticket) }}
+                                    {{ form_errors(form.name_on_ticket) }}
+                                </div>
+                            </div> #}
+
+                        </div>
+                    </div>
+
+                    {% for orderelement in order.orderelements %}
+                        <div class="card mt-4">
+                            <div class="card-header d-flex justify-content-between">
+                                <h6 class="mb-0">{{ "Guest information for " |trans}} <span style="text-weight:bold; font-size:16px;"> {{ orderelement.eventticket.eventdate.event.name }} </span> {{" ticket"|trans }}</h6>
+                                <a href="javascript:void(0)" data-event-id="{{orderelement.eventticket.eventdate.event.id}}" data-ticket-quantity="{{orderelement.quantity}}" class="add_guest_info_btn add_guest_info btn-primary remove_guest_info_event_id_{{orderelement.eventticket.eventdate.event.id}}" title="Add guest info">+</a>
+                            </div>
+                            <div class="card-body">
+                                <div class="guest_info_parent_{{orderelement.eventticket.eventdate.event.id}}">
+                                    <input type="hidden" name="json[{{orderelement.eventticket.eventdate.event.id}}][guest_info_event_id]" value="{{orderelement.eventticket.eventdate.event.id}}" />
+                                    <input type="hidden" style="display:none;" name="json[{{orderelement.eventticket.eventdate.event.id}}][guest_order_element_id]" value="{{orderelement.id}}" />
+                                </div> 
+                            </div>
+                        </div>
+                    {% endfor %}
+
+
+
+                    {% if order.getOrderElementsPriceSum(true) > 0 %}
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <h6 class="b mb-0">{{ "Payment method"|trans }}</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-row">
+                                    {% for paymentGateway in paymentGateways %}
+                                        <div class="col-6 form-group">
+
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input data-paymentGateway-id="{{ paymentGateway.id }}" class="custom-control-input" id="{{ paymentGateway.factoryName }}" type="radio" name="payment_gateway" value="{{ paymentGateway.factoryName }}" {{ loop.first ? "checked"}}/>
+                                                <label class="custom-control-label required" for="{{ paymentGateway.factoryName }}"><img src="{{  asset(paymentGateway.getLogoPath) }}" class="img-80-80 mr-3 ml-3" />{{ paymentGateway.name }}</label>
+                                            </div>
+
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                {% for paymentGateway in paymentGateways %}
+                                    {% if paymentGateway.instructions %}
+
+                                        <div id="paymentGateway{{ paymentGateway.id }}-instructions" class="form-row paymentGateways-instructions">
+                                            <div class="col-12 form-group">
+
+                                                {% include "Global/message.html.twig" with { type: "info", message: (paymentGateway.instructions|raw), icon: "fas fa-info-circle" } %}
+
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {# <div class="text-center mt-5">
+                            <button onClick="showSDK()" class="CheckoutButton" id="checkout_submit" type="button">
+                            <i class="fas fa-money-check"></i> {{ "Pay now"|trans }}
+                            </button>
+                        </div> #}
+                         <button id="checkout_submit" type="submit" class="btn btn-primary btn-block mt-4"><i class="fas fa-money-check"></i> {{ "Pay now"|trans }}</button>
+
+                    {% else %}
+                        {# <button id="checkout_submit" type="button" class="btn btn-primary btn-block mt-4"><i class="fas fa-edit"></i> {{ "Register"|trans }}</button> #}
+
+                        <button id="checkout_submit" type="submit" class="btn btn-primary btn-block mt-4"><i class="fas fa-edit"></i> {{ "Register"|trans }}</button>
+                    {% endif %}
+
+
+                    {{ form_end(form) }}
+
+                        {# <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                    
+                                        <div class="hypers-sdk hidden" id="hypers-sdk">
+                                            <form id="payment-form" onsubmit="handleSubmit({{ totalPrice }}); return false;">
+                                            <div id="unified-checkout">
+                                                <!--HyperLoader injects the Unified Checkout-->
+                                            </div>
+                                            <button id="submit" class="checkoutButton payNow">
+                                                <div class="spinner hidden" id="spinner"></div>
+                                                <span id="button-text">Pay now</span>
+                                            </button>
+                                            <div id="payment-message" class="hidden"></div>
+                                            </form>
+                                        </div>
+                                            <div class="ConfirmContainer hidden" id="orderSuccess">
+                                            <div><img width="150px" height="110px"
+                                                src="https://demo-hyperswitch.netlify.app/static/media/Successsuccess.5789e33b69b916d8485c1e6de79d60fa.svg">
+                                            </div>
+                                            <div class="ConfirmText">Thanks for your order!</div>
+                                            <div class="ConfirmDes">Yayyy! You successfully made a payment with Hyperswitch. If its a real store, your items
+                                            would have been on their way.</div>
+                                            <div><a class="returnLink" href="#" onClick="retryPayment()">Try hyperswitch Demo again</a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> #}
+      
+
+
+                        {# <div class="ConfirmContainer hidden" id="orderSuccess">
+                            <div><img width="150px" height="110px"
+                                src="https://demo-hyperswitch.netlify.app/static/media/Successsuccess.5789e33b69b916d8485c1e6de79d60fa.svg">
+                            </div>
+                            <div class="ConfirmText">Thanks for your order!</div>
+                            <div class="ConfirmDes">Yayyy! You successfully made a payment with Hyperswitch. If its a real store, your items
+                            would have been on their way.</div>
+                            <div><a class="returnLink" href="#" onClick="retryPayment()">Try hyperswitch Demo again</a></div>
+                        </div> #}
+
+                        {# <div class="Container">
+                            <div class="Cart"> #}
+                            {# <div class="orderSummary">Order summary (2)</div>
+                            <div class="items">
+                                <div class="Item">
+                                <div class="ItemContainer">
+                                    <div class="itemImg"><img width="100" height="100"
+                                        src="https://cdn.pixabay.com/photo/2016/12/06/09/31/blank-1886008_1280.png">
+                                    </div>
+                                    <div class="itemDetails">
+                                    <div class="name">HS Tshirt</div>
+                                    <div class="props">Size: <span class="value">37 &nbsp;&nbsp;&nbsp;</span>Qty:<span class="value">1 </span>
+                                    </div>
+                                    <div class="props">Color: <span class="value">Black</span></div>
+                                    </div>
+                                </div>
+                                <div> 100.00</div>
+                                </div>
+                                <div class="Item">
+                                <div class="ItemContainer">
+                                    <div class="itemImg"><img width="100" height="100"
+                                        src="https://cdn.pixabay.com/photo/2016/12/06/09/31/blank-1886008_1280.png">
+                                    </div>
+                                    <div class="itemDetails">
+                                    <div class="name">HS Cap</div>
+                                    <div class="props">Size: <span class="value">2 &nbsp;&nbsp;&nbsp;</span>Qty:<span class="value">1 </span>
+                                    </div>
+                                    <div class="props">Color: <span class="value">Black</span></div>
+                                    </div>
+                                </div>
+                                <div> 100.00</div>
+                                </div>
+                                <div class="ItemTotal">
+                                <div class="total">Total Amount</div>
+                                <div> 200.00</div>
+                                </div>
+                            </div> #}
+                            {# <div class="checkoutSection">
+                                <div class="description"><span> Hyperswitch is a high performance payment switch which can smartly route the
+                                    payment transaction to increase your revenue and reduce costs.</span><span class="subtext">Get started with
+                                    <a class="here" href="https://hyperswitch.io/docs/quickstart">hyperswitch</a></span>
+                                </div>
+                                <div onClick="showSDK()" class="buttonSection">
+                                    <button class="CheckoutButton"  data-toggle="modal" data-target="#exampleModal">Checkout with Hyperswitch</button>
+                                </div>
+                            </div> #}
+
+                            {# </div>
+                        </div> #}
+
+                </main>
+
+                <aside class="col-lg-4 pt-3 pt-lg-0 order-0 order-lg-1">
+                    <div class="sticky-top sticky-sidebar">
+                        <div class="checkout-timer-wrapper">
+
+                            {% set secondsLeft = 0 %}
+
+                            {% for orderElement in order.orderelements %}
+
+                                {% for ticketReservation in orderElement.ticketsReservations if not ticketReservation.isExpired %}
+
+                                    {% set dateInterval = ticketReservation.createdAt|date_modify("+"~ services.getSetting('checkout_timeleft') ~" second").diff(date("now")) %}
+                                    {% set secondsLeft = dateInterval|date("%i") * 60 + dateInterval|date("%s") %}
+
+                                {% endfor %}
+
+                            {% endfor %}
+
+                            {% if secondsLeft > 0 %}
+                                {% include 'Global/message.html.twig' with { type: 'warning',icon: 'fas fa-hourglass-half', message: '%mins% left before tickets are released'|trans({"%mins%" : "<span class='checkout-timer' data-seconds-left='"~secondsLeft~"'></span>"}) } %}
+                            {% endif %}
+
+                        </div>
+                        <dl class="dlist-align">
+                            <dt>{{ "Tickets"|trans }}</dt>
+                            <dd class="text-right ml-5">{{ services.getSetting('currency_position') == 'left' ? services.getSetting('currency_symbol') : '' }}{{ order.getOrderElementsPriceSum() }}{{ services.getSetting('currency_position') == 'right' ? services.getSetting('currency_symbol') : '' }}
+                            </dd>
+                        </dl>
+                        <dl class="dlist-align">
+                            <dt>{{ "Fees"|trans }}</dt>
+                            <dd class="text-right ml-5">{{ services.getSetting('currency_position') == 'left' ? services.getSetting('currency_symbol') : '' }}{{ order.getTotalFees() }}{{ services.getSetting('currency_position') == 'right' ? services.getSetting('currency_symbol') : '' }}</dd>
+                        </dl>
+                        <dl class="dlist-align h4">
+                            <dt>{{ "Total"|trans }}</dt>
+                            <dd class="text-right ml-5"><strong>{{ services.getSetting('currency_position') == 'left' ? services.getSetting('currency_symbol') : '' }}{{ order.getOrderElementsPriceSum(true) }}{{ services.getSetting('currency_position') == 'right' ? services.getSetting('currency_symbol') : '' }}</strong></dd>
+                        </dl>
+                        {% if order.getOrderElementsPriceSum(true) > 0 %}
+                            <hr>
+                            {% for paymentGateway in paymentGateways %}
+
+                                {% if paymentGateway.factoryName == "paypal_express_checkout" %}
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <img src="{{ asset('assets/img/icons/payment/americanexpress-dark.svg') }}" class="width-auto img-fluid">
+                                        </div>
+                                        <div class="col">
+                                            <img src="{{ asset('assets/img/icons/payment/visa-dark.svg') }}" class="width-auto img-fluid">
+                                        </div>
+                                        <div class="col">
+                                            <img src="{{ asset('assets/img/icons/payment/mastercard-dark.svg') }}" class="width-auto img-fluid">
+                                        </div>
+                                        <div class="col">
+                                            <img src="{{ asset('assets/img/icons/payment/discover-dark.svg') }}" class="width-auto img-fluid">
+                                        </div>
+                                        <div class="col">
+                                            <img src="{{ asset('assets/img/icons/payment/paypal-dark.svg') }}" class="width-auto img-fluid">
+                                        </div>
+                                    </div>
+
+                                {% endif %}
+
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </aside>
+            </div>
+
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block javascripts %}
+  {# <script src="{{ asset("assets/ll_assets/assets/js/hyperswitch.js") }}"></script>  #}
+  <script>
+        {# document.addEventListener('DOMContentLoaded', function () {
+            const btn = document.getElementById('checkout_submit');
+            const form = document.getElementById('checkout_form');
+
+            btn.addEventListener('click', async (event) => {
+                event.preventDefault(); // Prevent the default form submission
+
+                // Collect all input values
+                const formData = new FormData(form);
+                const formValues = {};
+                formData.forEach((value, key) => {
+                    formValues[key] = value;
+                });
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formValues),
+                    });
+                    // Check if the response is JSON
+                    const contentType = response.headers.get('Content-Type');
+                    if (contentType && contentType.indexOf('application/json') !== -1) {
+                        const jsonResponse = await response.json();
+
+                        if (response.ok) {
+                            // console.log(response);
+
+                            // Show modal or handle success response
+                            $('#exampleModal').modal('show');
+
+                            // Redirect if a URL is provided
+                            if (jsonResponse.redirect_url) {
+                                window.location.href = jsonResponse.redirect_url;
+                            }
+                        } else {
+                            //console.error('Error:', jsonResponse);
+
+                            // Handle validation errors and show them to the user
+                            displayFormErrors(jsonResponse.errors);
+                        }
+                    } else {
+                        const textResponse = await response.text();
+                        console.error('Error: Expected JSON response but received:', textResponse);
+                        // Optionally display an error message to the user
+                        alert('An unexpected error occurred. Please try again later.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+
+            function displayFormErrors(errors) {
+                // Clear previous errors
+                document.querySelectorAll('.form-error-message').forEach(element => {
+                    element.remove();
+                });
+
+                for (const [field, errorMessages] of Object.entries(errors)) {
+                    const inputElement = form.querySelector(`[name="${field}"]`);
+                    if (inputElement) {
+                        const errorElement = document.createElement('div');
+                        errorElement.classList.add('form-error-message');
+                        errorElement.textContent = errorMessages.join(', ');
+                        inputElement.parentNode.appendChild(errorElement);
+                    }
+                }
+            }
+        }); #}
+
+
+
+    //   async function loadScript(formValues){
+    //       try {
+        //           // Load the external JS file
+        //           await fetch('{{ asset("assets/ll_assets/assets/js/tracardi.js") }}')
+        //               .then(response => {
+        //                   if (!response.ok) {
+        //                       throw new Error('Network response was not ok');
+        //                   }
+        //                   return response.text();
+        //               })
+        //               .then(scriptContent => {
+        //                   const scriptElement = document.createElement('script');
+        //                   scriptElement.text = scriptContent;
+        //                   document.body.appendChild(scriptElement);
+        //               });
+        //
+        //           // Track the event
+        //           await new Promise((resolve, reject) => {
+        //               try {
+        //                   window.tracker.track('Checkout', {
+        //                       Action: 'Client',
+        //                       values: formValues
+        //                   });
+        //                   resolve();
+        //               } catch (error) {
+        //                   reject(error);
+        //               }
+        //           });
+        //           // Submit the form if everything is successful
+        //       } catch (error) {
+        //           console.error('Error:', error);
+    //           console.error('An error occurred.');
+    //       }
+    //   }
+
+    $(document).ready(function () {
+
+        $('.countryOld #checkout_country').attr('disabled', true).removeAttr('required');
+
+
+        
+       {% if app.user.country %}
+               $('#checkout_country').val('{{ app.user.country.id }}');
+               $('#checkout_country').trigger('change');
+       {% endif %}
+
+        $('input[name="payment_gateway"]').on('change', function () {
+            if ($(this).is(':checked')) {
+                $('.paymentGateways-instructions').hide();
+                $('#paymentGateway' + $(this).attr('data-paymentGateway-id') + '-instructions').show();
+            }
+        });
+        $('input[name="payment_gateway"]').trigger('change');
+
+
+
+
+        // guest info add form
+$('.add_guest_info_btn').click(function () {
+
+    let event_id = $(this).data('event-id');
+    let ticket_quantity = $(this).data('ticket-quantity')
+
+    if(1 < ticket_quantity){   
+        $('.guest_info_parent_'+event_id).append(`
+            <div class="guest_info_child">
+                <div class="form-row">
+                    <div class="col form-group">
+                        <label>{{ "Guest name"|trans }}<span style="color:red">*</span> </label>
+                        <input class="form-control" required type="text" name="json[${event_id}][guest_name][]"/>
+                    </div>
+                    <div class="col form-group">
+                        <label>{{ "Guest last name"|trans }}<span style="color:red">*</span> </label>
+                        <input class="form-control" required type="text" name="json[${event_id}][guest_last_name][]"/>
+                    </div>
+                    <div class="col form-group">
+                        <label>{{ "Guest telephone"|trans }}</label>
+                        <input class="form-control" type="text" name="json[${event_id}][guest_telephone][]"/>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col form-group">
+                        <label>{{ "Guest email"|trans }}<span style="color:red">*</span> </label>
+                        <input class="form-control" required type="text" name="json[${event_id}][guest_email][]"/>
+                    </div>
+                    <div class="col form-group">
+                        <label>{{ "Guest country"|trans }}</label>
+                        <input class="form-control" type="text" name="json[${event_id}][guest_country][]"/>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col form-group text-right">
+                        <a href="javascript:void(0)" class="remove_guest_info_btn add_guest_info btn-danger" data-event-id="${event_id}" title="remove guest info">&#x2715;</a>
+                    </div>
+                </div>
+
+            </div>
+        `)
+        ticket_quantity--;
+        $(this).data('ticket-quantity', ticket_quantity);
+    }else{
+        alert('Already add your all guest info that you buy tickets');
+    }
+})
+
+
+$(document).on('click', '.remove_guest_info_btn', function () {
+    let data_event_id = $(this).data('event-id');
+    let ticket_quantity = $('.remove_guest_info_event_id_'+data_event_id).data('ticket-quantity');
+    ticket_quantity++;
+    $('.remove_guest_info_event_id_'+data_event_id).data('ticket-quantity',ticket_quantity);
+    $(this).parent().parent().parent().remove();
+})
+
+
+
+
+        });
+
+
+    </script>
+
+
+{% endblock %}

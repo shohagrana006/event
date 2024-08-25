@@ -1,0 +1,78 @@
+{% extends "Global/layout.html.twig" %}
+
+{% set pagetitle = 'Train Text Bot' | trans %}
+
+{% block title %}{{ pagetitle }}{% endblock %}
+
+{% block stylesheets %}
+  
+{% endblock %}
+
+{% block content %}
+
+    {% set navigation = [{"dashboard_index": "Dashboard"|trans,"current":(pagetitle)}] %}
+    {% include "Global/navigation.html.twig" with navigation %}
+
+    <section class="section-content padding-y bg-white">
+        <div class="{{ services.getSetting("app_layout") }}">
+            <div class="row">
+                <aside class="col-lg-3 pt-3 pt-lg-0">
+                    {% include "Dashboard/sidebar.html.twig" %}
+                </aside>
+                <div class="col-lg-9 mt-4 mt-lg-0">
+
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <div class="row">
+
+                                <div class="col-md-10">
+                                    <form action="{{ path('retrain_store_chatbot_train_text') }}" method="post">
+                                        <div class="text_chatbot">
+
+                                            <div class="mb-2">
+                                                <label>Chatbot Template<span class="text-danger">*</span></label>
+                                                <select class="form-control" name="bot_select" id="bot_select" required>
+                                                    {% for bot in bots %}
+                                                        <option disabled selected value="{{  bot['id'] }}">{{  bot['name'] }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label>Chatbot Name<span class="text-danger">*</span></label>
+                                                <input type="text" disabled name="custom_name" class="form-control" value="{{chatbot['custom_name']}}" required />
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label>Description<span class="text-danger">*</span></label>
+                                                <textarea name="bot_text" cols="" rows="10" class="form-control" placeholder="Write text for train your chatbot"></textarea>
+                                            </div>
+                                            <input name="bot_id" value="{{chatbot['chatbot_id']}}" type="hidden"/>
+                                            <input name="userId" value="{{chatbot['org_id']}}" type="hidden"/>
+                                            <div class="mb-2 mt-4">
+                                                <div class="form-group">
+                                                    {# <button type="submit" name="status" value="false" class="btn btn-primary rounded mr-3">Re-train with fresh content</button>
+                                                    <button type="submit" name="status" value="true" class="btn btn-info rounded">Re-train with existing content</button> #}
+
+                                                    <button type="submit" name="status" value="true" class="btn btn-info rounded">Re-train</button>
+
+                                                </div>
+                                            </div>
+                                            
+
+                                        </div>
+                                    </form> 
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}

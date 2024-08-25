@@ -1,0 +1,112 @@
+{% extends "Global/layout.html.twig" %}
+
+{% set pagetitle = 'Train Text Bot' | trans %}
+
+{% block title %}{{ pagetitle }}{% endblock %}
+
+{% block stylesheets %}
+    
+{% endblock %}
+
+
+{% block content %}
+
+    {% set navigation = [{"dashboard_index": "Dashboard"|trans,"current":(pagetitle)}] %}
+    {% include "Global/navigation.html.twig" with navigation %}
+
+    <section class="section-content padding-y bg-white">
+        <div class="{{ services.getSetting("app_layout") }}">
+            <div class="row">
+                <aside class="col-lg-3 pt-3 pt-lg-0">
+                    {% include "Dashboard/sidebar.html.twig" %}
+                </aside>
+                <div class="col-lg-9 mt-4 mt-lg-0">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <div class="row">
+
+                                <div class="col-md-9">
+                                    <form action="{{ path('retrain_store_chatbot_train_attachment') }}" method="post" enctype="multipart/form-data">
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                     <label>Chatbot Template<span class="text-danger">*</span></label>
+                                                    <select class="form-control" name="bot_select" id="bot_select" required>
+                                                        {% for bot in bots %}
+                                                            <option disabled selected value="{{ bot['id'] }}">{{ bot['name'] }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                   <label>Chatbot Name<span class="text-danger">*</span></label>
+                                                    <input type="text" disabled name="custom_name" class="form-control" value="{{chatbot['custom_name']}}" required />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group attch-parent-chatbot">
+                                                    <label>Attachment<span class="text-danger">*</span></label>
+                                                     <p style="color:#8F8F8F; font-size:12px;">( Describe the information contained in the file to be attached for training. For example FAQ, DOcuments containing information about topics, parking,  … )</p>
+                                                    <div class="attach_append">
+                                                        <div class="chatbot-attach d-flex">
+                                                            <input type="file" name="files[]" accept=".txt" class="form-control" required>
+                                                            <a href="javascript:void(0)" class="btn btn-success rounded add_more_btn">+</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                            <input name="bot_id" value="{{chatbot['chatbot_id']}}" type="hidden"/>
+                                            <input name="userId" value="{{chatbot['org_id']}}" type="hidden"/>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <button type="submit" name="status" value="true" class="btn btn-info rounded">Re-train</button>
+                                                </div>
+                                            </div>
+                                        </div>   
+                                    </form>
+                                </div>
+
+                               
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+
+{% block javascripts %}
+
+    <script>
+        $(document).ready(function(){
+            $('.add_more_btn').click(function(){
+                $('.attach_append').append(`
+                   <div class="chatbot-attach mt-3 d-flex">
+                        <input type="file" name="files[]" accept=".txt" class="form-control">
+                        <a href="javascript:void(0)" class="btn btn-danger rounded remove_btn">-</a>
+                    </div>
+                `)
+            })
+
+            $(document).on('click', '.remove_btn', function(){
+                $(this).parent().remove()
+            })
+
+        })
+    </script>
+
+{% endblock %}

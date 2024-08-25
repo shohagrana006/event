@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([["app.purple"],{OSix:function(n,p,i){},gCnl:function(n,p,i){i("OSix")}},[["gCnl","runtime"]]]);

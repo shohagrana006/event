@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket</title>
+</head>
+
+<body style="font-family:Verdana, Geneva, Tahoma, sans-serif ;">
+<section class="section-content padding-y bg-white">
+    <div style="max-width: 100%; margin: auto;">
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            <div
+                    style="box-shadow: 0 0 10px rgba(0,0,0,0.1); border-radius: 8px; margin-bottom: 20px; display: flex;  max-width: 600px; width: 100%;">
+                <div style="width: 100%; max-width: 300px;">
+                    <div
+                            style="background-color: #9de7ff; color: #fff; padding: 15px; border-right: 1px solid white;">
+                        <h2 style="font-size: 18px; margin: 20px;">Order #</h2>
+                    </div>
+                    <div style="padding: 15px;">
+                        <h1 style="font-size: 22px; font-weight: 600; margin: 0px;">{{ user.firstname ~ ' ' ~ user.lastname }}</h1>
+                        <h6 style="font-weight: bolder; color: #766d6d; margin-bottom: 0px;">Start Date</h6>
+                        <h6 style="font-weight: bolder; margin: 0px;">{{ event_date.startdate|date('D d M Y, h:i A T', 'UTC') }}</h6>
+                        
+                        
+                        
+                        {% if event_date.online %}
+                        
+                            {{ "Online"|trans({}, "messages", locale) }}
+                            <br>
+                            {% if link is not empty %}
+                                <div style="padding: 7px 15px; width: 100%;>
+                                    <div style="float: left;">
+                                        <h3 style="font-size: 16px; margin: 0px;  color: #766d6d;">Organizer</h3>
+                                            <h5 style="margin: 0px;">Keos</h5>
+                                    </div>
+                                    <a href="{{ link }}" style="float: left; margin-top: 20px; background-color: #007bff; color: #fff; border: none; padding: 8px 16px; border-radius: 5px; text-decoration: none;">Join</a>
+                                </div>
+                            {% endif %}
+                            
+                        {% else %}
+Location :{{event_date.street}},{{event_date.street2}},{{event_date.city}}{{event_date.state}}
+                            
+                        {% endif %} 
+                        
+                        
+                        
+
+                        
+                        
+                        
+                    </div>
+
+                </div>
+                <div style="width: 100%; max-width: 300px;">
+                    <div style="background-color: #9de7ff; color: #fff; padding: 15px; ">
+                        <h2 style="font-size: 18px; margin: 20px;">Order #</h2>
+                    </div>
+                    <div style="padding: 15px; border-left: 1px solid #ddd;">
+                        <h1 style="font-size: 22px; font-weight: 600;  margin: 0px">{{ eventMail.name ~ ' ' ~ eventMail.surname }}</h1>
+                        <h6 style="font-weight: bolder; color: #766d6d; margin-bottom: 0px;">Tiket type</h6>
+                        <h6 style="font-weight: bolder; margin-top: 6px; margin-bottom: 6px;">{{ event_ticket.name }}</h6>
+                        <h6 style="font-weight: bolder; color: #766d6d; margin: 0px;">Tiket Price</h6>
+                        <h6 style="font-weight: bolder; margin: 0px;">Free</h6>
+                    </div>
+                    <div
+                            style="padding: 20px 15px; display: flex; justify-content: space-between; align-items: center;  border-left: 1px solid #ddd;">
+                        <div>
+                            <h3 style="font-size: 16px; color: #766d6d; margin: 0px;">Order date</h3>
+                            <h5 style="margin-top: 7px;">{{ orderDateTime }}</h5>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+
+</html>

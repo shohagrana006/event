@@ -1,0 +1,213 @@
+{% extends "Global/layout.html.twig" %}
+
+{% set pagetitle = 'quiz setting' | trans %}
+
+{% block title %}{{ pagetitle }}{% endblock %}
+
+{% block content %}
+
+    {% set navigation = [{"dashboard_index": "Dashboard"|trans,"current":(pagetitle)}] %}
+    {% include "Global/navigation.html.twig" with navigation %}
+
+    <section class="section-content padding-y bg-white">
+        <div class="{{ services.getSetting("app_layout") }}">
+            <div class="row">
+                <aside class="col-lg-3 pt-3 pt-lg-0">
+                    {% include "Dashboard/sidebar.html.twig" %}
+                </aside>
+                <div class="col-lg-9 mt-4 mt-lg-0">
+
+                            <div class="virtual_table">
+                                <div class="heading row" style="border: 1px solid #ddd; padding: 10px 0;">
+                                    <div class="col-lg-6">
+                                        <h4 style="margin-top: 8px;">Event Quiz Managment For Zoom Meeting</h4>
+                                    </div>
+                                </div>
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Topic</th>
+                                            <th>Description (optional)</th>
+                                            <th>Host url</th>
+                                            <th>Quiz start</th>
+                                            <th>Quiz close</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        {% for meeting in zoom_meeting %}
+                                            {% set url = meeting['start_url'] %}
+                                            {% set parts = url|split('/') %}
+                                            {% if parts|length > 4 %}
+                                                {% set id = parts[4]|split('?')[0] %}
+                                                <tr>
+                                                    <td>{{ meeting['topic'] ?? '' }}</td>
+                                                    <td>{{ meeting['agenda'] ?? '' }}</td>
+                                                    <td><a target="_blank" href="{{ meeting['start_url'] }}" rel="noopener">start meeting</a></td>
+                                                    <td><a class="btn btn-sm btn-primary" href="{{ path('start_quiz', {'quiz': id}) }}">start quiz</a></td>
+                                                    <td><a class="btn btn-sm btn-success" href="{{ path('close_quiz', {'quiz': id}) }}">close quiz</a></td>
+                                                </tr> 
+                                            {% else %}
+                                                <tr>
+                                                    <td>{{ meeting['topic'] ?? '' }}</td>
+                                                    <td>{{ meeting['agenda'] ?? '' }}</td>
+                                                    <td><a target="_blank" href="{{ meeting['start_url'] }}" rel="noopener">start meeting</a></td>
+                                                    <td colspan="2">Invalid URL format</td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                    <div class="virtual_table">
+                        <div class="heading row" style="border: 1px solid #ddd; padding: 10px 0;">
+                            <div class="col-lg-6">
+                                <h4 style="margin-top: 8px;">Event Quiz Managment For Google Meeting</h4>
+                            </div>
+                        </div>
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Topic</th>
+                                    <th>Description (optional)</th>
+                                    <th>Host url</th>
+                                    <th>Quiz start</th>
+                                    <th>Quiz close</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for meeting in google_meeting %}
+                                {% set url =  meeting['join_url'] %}
+                                {% set parts = url|split('/') %}
+                                {% set roomId = parts|last %}
+                                <tr>
+                                    <td>{{ meeting['topic'] ?? '' }}</td>
+                                    <td> {{ meeting['agenda'] ?? '' }} </td>
+                                    <td><a target="_blank" href="{{ meeting['join_url'] }}" rel="noopener">start meeting</a></td>
+                                    <td><a class="btn btn-sm btn-primary" href="{{ path('start_quiz',{'quiz':roomId}) }}">start quiz</a></td>
+                                    <td><a class="btn btn-sm btn-success" href="{{ path('close_quiz',{'quiz':roomId}) }}">close quiz</a></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                    <div class="quiz-parent">
+                        {# <div class="quiz_block">
+                            <span class="quiz_heading">Quiz start</span>
+                            <a href="" class="btn btn-primary">click here</a>
+                        </div>
+
+                        <div class="quiz_block">
+                            <span class="quiz_heading">Quiz close</span>
+                            <a href="{{path('start_quiz',{'quiz':'result'})}}" class="btn btn-primary">click here</a>
+                        </div> #}
+
+                        {# <div class="quiz_block">
+                            <span class="quiz_heading">Show winner</span>
+                            <a href="{{path('start_quiz',{'quiz':'winner'})}}" class="btn btn-primary">click here</a>
+                        </div> #}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .quiz_block .quiz_heading{
+            font-size:20px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        .quiz_block {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .quiz_block .btn.btn-primary{
+            max-width: 200px;
+        }
+
+        .quiz-parent {
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+        }
+
+        .quiz_block .quiz_heading {
+            font-size: 20px;
+            background-color: #2b5f641f;
+            max-width: 50%;
+            padding: 7px 20px;
+            border-radius: 5px;
+        }
+    </style>
+{% endblock %}

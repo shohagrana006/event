@@ -1,0 +1,538 @@
+{% extends "Global/layout.html.twig" %}
+
+{% set pagetitle = 'Zoom SDK' | trans %}
+
+{% block title %}{{ pagetitle }}{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        html,
+        body {
+            height: auto !important;
+            min-width: 0 !important;
+            font-size: 13px !important;
+            overflow-y: auto !important;
+        }
+
+        #zmmtg-root {
+            display: none;
+            min-width: 0 !important;
+            position: relative !important;
+            background-color: #fff !important;
+        }
+
+        .main {
+            width: 70%;
+            margin: auto;
+            text-align: center;
+        }
+
+        .join-button {
+            margin-top: 20px;
+            background-color: #2D8CFF;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 40px;
+            display: inline-block;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+            outline: none;
+        }
+
+        .join-button:hover {
+            background-color: #2681F2;
+        }
+        .section-pagetop{
+            padding:2px 0 !important;
+        }
+        .breadcrumb{
+            padding: 0 15px !important;
+        }
+        .root-inner{
+            background-color:red;
+       }
+
+       .start-quiz-icon{
+            padding: 10px 20px;
+            background-color: #ab5512;
+            color: white;
+            border-radius: 10px;
+       }
+       .start-quiz-heading {
+            font-size: 25px;
+            text-align: center;
+            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            margin: auto;
+            color: #033c03d1;
+            font-weight: 600;
+        }
+        .start-quiz-row-parent .col-lg-6.col-12 {
+            margin: 0;
+            padding: 0px 2px;
+        }
+
+        h1.start-quiz-icon i{
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            font-size: 25px;
+        }
+
+        .modal-footer button.btn.btn-secondary {
+            background-color: #40e3eb;
+            color: #585656;
+            font-weight: 600;
+            padding: 10px 30px;
+            border-radius: 25px;
+            outline: none;
+            border: none;
+            text-transform: capitalize;
+        }
+
+        .btn-secondary.focus, .btn-secondary:focus{
+            box-shadow: none;
+        }
+
+        .modal-body{
+            padding: 10px !important;
+        }
+
+        .modal-content{
+            border: 7px solid #97a89bc7 !important;
+        }
+
+        .modal-content.show-result-modal-inner{
+            background-color: #d8edca !important; 
+        }
+
+        button.btn.btn-praimary.show-result-modal-button {
+            background-color: #17589b;
+            color: white;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: auto;
+            margin-bottom: 40px;
+        }
+
+        .show-result-heading{
+            text-align: center;
+        }
+
+        .modal-content.show-winner-inner{
+            background-color: #d8edca !important; 
+        }
+
+        .modal-title.winner-title{
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: auto;
+            padding-left: 180px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        h1.winner-title {
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 45px;
+        }
+
+        .winner-number-parent {
+            height: 40px;
+            width: 50px;
+            margin: auto;
+            background-color: #838f78;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+        }
+
+        .winner-paragraph{
+            text-align: center;
+        }
+
+        .quick-links-fream iframe{
+            width: 100%;
+            height: 675px !important;
+        }
+
+        .inner-quize-modal-xl{
+            max-width: 1320px !important;
+            width: 100% !important;
+            height: 800px !important;
+        }
+
+        .inner-quize-modal-xl .modal-content{
+            width: 100% !important;
+            max-width: 1320px !important;
+            height: 800px !important;
+            margin-top: 400px;
+            border-radius: 10px;
+        }
+
+        .modal-header .close{
+            color: black;
+            opacity: 1;
+        }
+
+        .modal_minimize_icon {
+            padding-top: 9px !important;
+            border: 1px solid #ddd !important;
+        }
+        .modal_minimize_icon i{
+            font-size:16px;
+        }
+        .modal_close_icon {
+            height: 44px !important;
+            margin-left:15px !important;
+        }
+
+        .section-content {
+            min-height: 49vh;
+        }
+
+        div#preview-av-video {
+            position: relative;
+            min-height: 143px;
+            top: 0;
+            left: 0;
+            margin-top: 24px;
+        }
+
+        .waiting-room-container .wr-default-bg.wr-bg-full-screen{
+            {# max-height: 659px; #}
+            max-height: 580px;
+        }
+
+        button.close.modal_close_icon {
+            outline: none;
+            box-shadow: none;
+            margin: 0px;
+            position: relative;
+            top: -8px;
+            right: -6px;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
+
+    <style type="text/css">  
+
+        .modal-header .btnGrp{
+            position: absolute;
+            top: 8px;
+            right: 10px;
+        } 
+    
+
+        .min{
+            width: 250px; 
+            height: 35px;
+            overflow: hidden !important;
+            padding: 0px !important;
+            margin: 0px;    
+
+            float: left;  
+            position: static !important; 
+        }
+
+        .min .modal-dialog, .min .modal-content{
+            height: 100%;
+            width: 100%;
+            margin: 0px !important;
+            padding: 0px !important; 
+        }
+
+        .min .modal-header{
+            height: 100%;
+            width: 100%;
+            margin: 0px !important;
+            padding: 3px 5px !important; 
+        }
+
+        .display-none{display: none;}
+
+        button .fa{
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
+        .min .fa{
+            font-size: 14px; 
+        }
+
+        .min .menuTab{display: none;}
+
+        button:focus { outline: none; }
+
+        .minmaxCon{
+            height: 35px;
+            bottom: 1px;
+            left: 1px;
+            position: fixed;
+            right: 1px;
+            z-index: 9999;
+        }
+    </style> 
+{% endblock %}
+
+{% block content %}
+
+
+
+    {% set navigation = [{"dashboard_index": "Dashboard"|trans,"current":(pagetitle)}] %}
+    {% include "Global/navigation.html.twig" with navigation %}
+
+    <section class="section-content padding-y bg-white">
+        <div class="{{ services.getSetting("app_layout") }}">
+            <div class="row">
+                <div class="col-lg-12 mt-4 mt-lg-0">
+                    <div class="card shadow padding-bottom-lg">
+                        <div class="main">
+                            <h1>Zoom Meeting SDK</h1>
+
+                            <!-- For Component View -->
+                            <div id="meetingSDKElement">
+                                <!-- Zoom Meeting SDK Rendered Here -->
+                            </div>
+
+                            <button class="join-button" id="JoinZoomMeeting" onClick="getSignature()">Join Meeting</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <div class="modal fade mymodal" data-keyboard="false" data-backdrop="static"  id="quiz_start_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog  modal-lg inner-quize-modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title start-quiz-heading" id="exampleModalLongTitle">Quiz demo</h5>
+
+                    {# <button type="button" class="modal_minimize_icon modalMinimize">
+                        <i class='fa fa-minus'></i>
+                    </button> #}
+
+                    <button type="button" class="close modal_close_icon" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row start-quiz-row-parent quick-links-fream" id="quiz_iframe">
+                        <iframe src="{{ quizApiUrl }}" height="200" width="300"  title="quiz"></iframe> 
+                    </div>
+                </div>
+            
+            </div>
+        </div>
+    </div>
+
+    <div class="minmaxCon"></div>  
+
+ 
+    {# <script src="https://tracardi-m.keosapp.com/assets/js/loyalty.min.js"></script> #}
+    <script>
+        !function(t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define([],t):("undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this).tracardi=t()}(function(){return function r(o,i,a){function c(e,t){if(!i[e]){if(!o[e]){var n="function"==typeof require&&require;if(!t&&n)return n(e,!0);if(d)return d(e,!0);throw(n=new Error("Cannot find module '"+e+"'")).code="MODULE_NOT_FOUND",n}n=i[e]={exports:{}},o[e][0].call(n.exports,function(t){return c(o[e][1][t]||t)},n,n.exports,r,o,i,a)}return i[e].exports}for(var d="function"==typeof require&&require,t=0;t<a.length;t++)c(a[t]);return c}({1:[function(t,e,n){"use strict";!function(t){t=t||window;var n=[],r=!1,o=!1;function i(){if(!r){r=!0;for(var t=0;t<n.length;t++)n[t].fn.call(window,n[t].ctx);n=[]}}function a(){"complete"===document.readyState&&i()}t.documentReady=function(t,e){if("function"!=typeof t)throw new TypeError("callback for documentReady(fn) must be a function");r?setTimeout(function(){t(e)},1):(n.push({fn:t,ctx:e}),"complete"===document.readyState||!document.attachEvent&&"interactive"===document.readyState?setTimeout(i,1):o||(document.addEventListener?(document.addEventListener("DOMContentLoaded",i,!1),window.addEventListener("load",i,!1)):(document.attachEvent("onreadystatechange",a),window.attachEvent("onload",i)),o=!0))}}(window);var r=[];window.tracker||(window.tracker={}),window.response||(window.response={context:{}}),window.onTracardiReady={bind:function(t){"function"==typeof t&&r.push(t)},call:function(e){r.forEach(function(t){t(e)})}},function(){for(var n=[],r="liliput.min.js",t=["track"],e=0;e<t.length;e++){var o=t[e];window.tracker[o]=function(e){return function(){var t=Array.prototype.slice.call(arguments);return t.unshift(e),n.push(t),window.tracker}}(o)}function i(){if(console.debug("[Loader] Rerun callbacks."),void 0!==window.tracardi.default)if(window.tracardi.default.getState().plugins.tracardi.initialized)for(window.tracker=window.tracardi.default;0<n.length;){var t=n.shift(),e=t.shift();tracker[e]&&tracker[e].apply(tracker,t)}else console.error("[Loader] Callbacks stopped. Tracker not initialized.");else console.error("[Loader] Callbacks stopped. Tracker not initialized. Is script url correct?")}documentReady(function(){var t,e,n;"1"!==navigator.doNotTrack||!0!==(null===(t=options)||void 0===t||null===(e=t.tracker)||void 0===e||null===(n=e.settings)||void 0===n?void 0:n.respectDoNotTrack)?((e=document.createElement("script")).type="text/javascript",e.async=!0,void 0!==options.tracker||void 0!==options.tracker.url||void 0!==options.tracker.url.script?(null!==options.tracker.url.script?options.tracker.url.script.startsWith("http")||options.tracker.url.script.startsWith("//")?e.src=options.tracker.url.script+"/"+r:e.src=options.tracker.url.script:e.src=r,console.debug("[Loader] Loading: "+e.src),e.addEventListener?e.addEventListener("load",function(t){i()},!1):e.onreadystatechange=function(){"complete"!==this.readyState&&"loaded"!==this.readyState||i(window.event)},(n=document.getElementsByTagName("script")[0]).parentNode.insertBefore(e,n)):console.error("[Loader] Undefined options.tracker.url.script. This url defines location of tracker code.")):console.log("We are respecting do not track setting. Tracardi disabled.")})}()},{}]},{},[1])(1)});
+
+        var options = {
+            tracker: {
+                url: {
+                    // This is url to tracardi backend. Please mind the correct port.
+                    script: 'https://stg-bdp-api.keos.co/tracker',
+                    api: 'https://stg-bdp-api.keos.co'
+                },
+                source: {
+                    id: "0bfb6914-bd7a-4d46-a41a-8592e9ef3520"
+                }
+                // Please see the documentation for more settings: http://docs.tracardi.com/integration/js-integration/
+            }
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC" ></script>
+
+    <!-- Dependencies for client view and component view -->
+    <script src="{{ asset('assets/zoom/react.min.js') }}" ></script>
+    <script src="{{ asset('assets/zoom/react-dom.min.js') }}" ></script>
+    <script src="{{ asset('assets/zoom/redux.min.js') }}" ></script>
+    <script src="{{ asset('assets/zoom/redux-thunk.min.js') }}" ></script>
+    <script src="{{ asset('assets/zoom/lodash.min.js') }}" ></script>
+    
+    <!-- For Client View -->
+    <script src="{{ asset('assets/zoom/zoom-meeting-3.1.6.min.js') }}" ></script>
+    <script>
+        ZoomMtg.preLoadWasm()
+        ZoomMtg.prepareWebSDK()
+        
+        var authEndpoint = '{{ zoomAuthEndPoint }}'
+        var sdkKey = '{{ sdkKey }}'
+        var zoom_client_secret = '{{ sdk_secret }}'
+        var meetingNumber = '{{ event_meeting['meeting_id'] }}'
+        var passWord = '{{ event_meeting['password'] }}'
+        var role = 0
+        var userName = 'Keos'
+        var userEmail = ''
+        var registrantToken = ''
+        var zakToken = ''
+        var leaveUrl = '{{ leaveUrl }}'
+
+        function getSignature() {
+            fetch(authEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    meetingNumber: meetingNumber,
+                    sdkKey: sdkKey,
+                    zoom_client_secret: zoom_client_secret,
+                    role: role
+                })
+            }).then((response) => {
+                return response.json()
+            }).then((data) => {
+                // console.log(data)
+                startMeeting(data.signature)
+
+                if ($("#zmmtg-root").attr('style') !== undefined) {
+                    $(".section-content").hide();
+                }
+            }).catch((error) => {
+                // alert('SDK key Not Valid')
+                console.log(error)
+            })
+        }
+
+        function startMeeting(signature) {
+
+            document.getElementById('zmmtg-root').style.display = 'block';
+            window.tracker.track('Meeting In', {
+                Type: 'Click',
+                Action: 'Cliente',
+                passWord: passWord,
+                userName: userName,
+                userEmail: userEmail,
+            }).then((resp) => {
+                ZoomMtg.init({
+                    leaveUrl: leaveUrl,
+                    patchJsMedia: true,
+                    success: (success) => {
+                        console.log(success);
+                        ZoomMtg.join({
+                            signature: signature,
+                            sdkKey: sdkKey,
+                            meetingNumber: meetingNumber,
+                            // zoom_client_secret:zoom_client_secret,
+                            passWord: passWord,
+                            userName: userName,
+                            userEmail: userEmail,
+                            // tk: registrantToken,
+                            // zak: zakToken,
+                            success: (success) => {
+                                console.log(success);
+                            },
+                            error: (error) => {
+                                console.log(error);
+                            },
+                        });
+                    },
+                    error: (error) => {
+                        console.log(error);
+                    }
+                });
+            }).catch((err) => {
+                console.error(err);
+            });
+
+        }
+    </script>
+
+    <!-- For Component View -->
+    <script src="{{ asset('assets/zoom/zoom-meeting-embedded-3.1.6.min.js') }}" ></script>
+    <script type="text/javascript" src="component-view.js"></script>
+
+    <script src="{{ asset('assets/zoom/4.4.1_socket.io.js') }}" ></script>
+
+    <script>
+        var socket = io("{{ nodeServer }}", {
+            secure: true,
+        })
+        socket.on("start_quiz_{{ event_meeting['meeting_id'] }}", function(response) {
+            $('#quiz_start_modal').modal('show');
+        });
+
+        socket.on("close_quiz_{{ event_meeting['meeting_id'] }}", function(response) {
+            $('#quiz_iframe').html(`
+                <iframe src="{{ quizApiUrl }}" height="200" width="300"  title="quiz"></iframe>
+            `)
+            $('#quiz_start_modal').modal('hide');
+        });
+    </script>
+
+    <script>
+        $(document).ready(function(){ 
+            // window.tracker.track("Entering meeting", {
+           //     "Meeting ID": `${meeting_id}`,
+            //}).then(response => {
+            //    console.log('Tracking successful:', response);
+            //})
+            //.catch(error => {
+            //    console.error('Tracking failed:', error);
+            //});
+
+            var $content, $modal, $apnData, $modalCon; 
+            $content = $(".min");
+
+            $(".modalMinimize").on("click", function(){
+                $modalCon = $(this).closest(".mymodal").attr("id");  
+                $apnData = $(this).closest(".mymodal");
+                $modal = "#" + $modalCon;
+                $(".modal-backdrop").addClass("display-none");
+
+                $($modal).toggleClass("min");
+                if ( $($modal).hasClass("min") ){ 
+                    $(".minmaxCon").append($apnData);  
+                    $(this).find("i").toggleClass('fa-minus fa-clone');
+                } 
+                else { 
+                    $(".container").append($apnData); 
+                    $(this).find("i").toggleClass('fa-clone fa-minus');
+                }; 
+            });
+
+            $("button[data-dismiss='modal']").click(function(){   
+                var $modal = $(this).closest(".mymodal");
+                $modal.removeClass("min");
+                $(".container").append($modal);   
+                $modal.find(".modalMinimize i").removeClass('fa-clone').addClass('fa-minus');
+            });
+
+        });
+    </script>
+
+
+
+{% if (chatbot_id != null) %}
+    <script type="module">
+        import Chatbot from "{{chatbot_flowise}}";
+        Chatbot.init({
+            chatflowid: "{{chatbot_id}}",
+            apiHost: "{{ api_host }}"
+        });
+    </script>
+{% endif %}
+
+{% endblock %}

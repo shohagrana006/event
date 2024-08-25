@@ -1,0 +1,257 @@
+{% extends "Global/layout.html.twig" %}
+{% set pagetitle = 'CSV users list' | trans %}
+{% block title %}{{pagetitle}}{% endblock %}
+
+{% block content %}
+
+    {% set navigation = [{ "dashboard_index": ('Dashboard' | trans), "current":(pagetitle) }] %}
+    {% include "Global/navigation.html.twig" with navigation %}
+
+    <section class="section-content padding-y bg-white">
+        <div class="{{ services.getSetting("app_layout") }}">
+            <div class="row">
+                <aside class="col-lg-3 pt-3 pt-lg-0">
+                    {% include "Dashboard/sidebar.html.twig" %}
+                </aside>
+                <div class="col-lg-9 mt-4 mt-lg-0">
+                    <div class="card box">
+
+                        <div class="card-body virtual_form">
+
+                            {# valid unsend csv user data table start #}
+                            <div class="virtual_table">
+                                <div class="heading row bg-warning" style="border: 1px solid #ddd; padding: 10px 0;">
+                                    <div class="col-lg-6">
+                                        <h5 style="margin-top: 8px;">CSV user list unsend mail</h5>
+                                    </div>
+                                    <div class="col-lg-6 text-right">
+                                        <a onClick="sendTicket({{event_id}}); return false;" href="javascript:void(0)" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="At a time you can 20 mail send">
+                                            <i class="dropdown-icon fas fa-envelope fa-fw text-muted"></i> {{ "Send tickets"|trans }}
+                                        </a>
+                                    </div>
+                                </div>
+                               <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Name/Email
+                                                <br/>
+                                                Phone number/Department
+                                            </th>
+                                            <th>City/Country</th>
+                                            <th>Address</th>
+                                            <th>Status</th>
+                                            {# <th>Action</th> #}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                      {% if event_valid_mails|length > 0 %}
+                                        {% for valid_mail in event_valid_mails %}
+                                            {% if valid_mail['status'] == 0 %}
+                                                <tr>
+                                                    <td>
+                                                        {{ valid_mail['name'] ?? '' }} 
+                                                        {{ valid_mail['surname'] ?? '' }}
+                                                        <br/>
+                                                        <span class="text-secondary">{{ valid_mail['email'] ?? '' }}</span>
+                                                        <br/>
+                                                        {{ valid_mail['country_code'] ?? '' }}{{ valid_mail['phone_number'] ?? '' }}
+                                                        <br/>
+                                                        {{ valid_mail['department'] ?? '' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ valid_mail['city'] ?? '' }}
+                                                        <br/>
+                                                        {{ valid_mail['country'] ?? '' }}
+                                                    </td>
+                                                    <td>{{ valid_mail['address'] ?? '' }}</td>
+                                                    <td>
+                                                        {% if valid_mail['status'] == 1 %}
+                                                            <span class="badge badge-success">sent</span>
+                                                        {% else %}
+                                                            <span class="badge badge-danger">unsent</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    
+                                                </tr> 
+                                            {% endif %}
+                                        {% endfor %}
+                                      {% else %}
+                                        <tr>
+                                            <td colspan="50">
+                                                <span class="text-danger">No valid csv user data</span>
+                                            </td>
+                                        </tr> 
+                                      {% endif %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            {# valid unsendcsv user data table end #}
+
+                            {# valid send csv user data table start #}
+                            <div class="virtual_table">
+                                <div class="heading row bg-success" style="border: 1px solid #ddd; padding: 10px 0;">
+                                    <div class="col-lg-6">
+                                        <h5 style="margin-top: 8px;">CSV user list sent mail</h5>
+                                    </div>
+                                </div>
+                               <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Name/Email
+                                                <br/>
+                                                Phone number/Department
+                                            </th>
+                                            <th>City/Country</th>
+                                            <th>Address</th>
+                                            <th>Status</th>
+                                            {# <th>Action</th> #}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                      {% if event_valid_mails|length > 0 %}
+                                        {% for valid_mail in event_valid_mails %}
+                                            {% if valid_mail['status'] == 1 %}
+                                                <tr>
+                                                    <td>
+                                                        {{ valid_mail['name'] ?? '' }} 
+                                                        {{ valid_mail['surname'] ?? '' }}
+                                                        <br/>
+                                                        <span class="text-secondary">{{ valid_mail['email'] ?? '' }}</span>
+                                                        <br/>
+                                                        {{ valid_mail['country_code'] ?? '' }}{{ valid_mail['phone_number'] ?? '' }}
+                                                        <br/>
+                                                        {{ valid_mail['department'] ?? '' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ valid_mail['city'] ?? '' }}
+                                                        <br/>
+                                                        {{ valid_mail['country'] ?? '' }}
+                                                    </td>
+                                                    <td>{{ valid_mail['address'] ?? '' }}</td>
+                                                    <td>
+                                                        {% if valid_mail['status'] == 1 %}
+                                                            <span class="badge badge-success">sent</span>
+                                                        {% else %}
+                                                            <span class="badge badge-danger">unsent</span>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                      {% else %}
+                                        <tr>
+                                            <td colspan="50">
+                                                <span class="text-danger">No valid csv user data</span>
+                                            </td>
+                                        </tr> 
+                                      {% endif %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            {# valid send csv user data table end #}
+
+                            {# invalid csv user data table start #}
+                            <div class="virtual_table">
+                                <div class="heading row bg-danger" style="border: 1px solid #ddd; padding: 10px 0;">
+                                    <div class="col-lg-6">
+                                        <h5 style="margin-top: 8px;">CSV invalid data (User list)</h5>
+                                    </div>
+                                </div>
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Surname</th>
+                                            <th>Email</th>
+                                            <th>Phone_number</th>
+                                            <th>Department</th>
+                                            <th>City</th>
+                                            <th>Country</th>
+                                            <th>Address</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                      {% if event_invalid_mails|length > 0 %}
+                                        {% for invalid_mail in event_invalid_mails %}
+                                            <tr>
+                                                <td>{{ invalid_mail['name'] ?? '' }}</td>
+                                                <td>{{ invalid_mail['surname'] ?? '' }}</td>
+                                                <td>{{ invalid_mail['email'] ?? '' }}</td>
+                                                <td>{{ invalid_mail['country_code'] ?? '' }}{{ invalid_mail['phone_number'] ?? '' }}</td>
+                                                <td>{{ invalid_mail['department'] ?? '' }}</td>
+                                                <td>{{ invalid_mail['city'] ?? '' }}</td>
+                                                <td>{{ invalid_mail['country'] ?? '' }}</td>
+                                                <td>{{ invalid_mail['address'] ?? '' }}</td>
+                                            </tr> 
+                                        {% endfor %}
+                                      {% else %}
+                                        <tr>
+                                            <td colspan="50" class="text-center">
+                                                <span class="text-danger">No invalid csv user data</span>
+                                            </td>
+                                        </tr> 
+                                      {% endif %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            {# invalid csv user data table end #}
+
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+{% endblock %}
+
+{% block javascripts %} 
+<script>
+async function sendTicket(eventId) {
+    try{
+        console.log('Sending ticket for event:', eventId);
+        await fetch('{{ asset("assets/ll_assets/assets/js/tracardi.js") }}').then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        }).then(scriptContent => {
+            const scriptElement = document.createElement('script');
+            scriptElement.text = scriptContent;
+            document.body.appendChild(scriptElement);
+        });
+
+        await new Promise((resolve, reject) => {
+            try {
+                window.tracker.track('Send Email', {
+                    Type: 'Click',
+                    Action: 'Client',
+                    eventId: eventId
+                });
+                resolve();
+            } catch (error) {
+                reject(error);
+            }
+        });
+        let path = "{{ path('send_ticket_csv') }}"
+
+        window.location.replace(`${path}/${eventId}`);
+
+
+        
+    } catch (error) {
+        console.error('Error:', error);
+        console.error('An error occurred.');
+    }
+}
+</script>
+{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}

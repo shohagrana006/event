@@ -1,0 +1,296 @@
+# Installer routes
+
+app_installer:
+  resource: "../src/Controller/Installer"
+  prefix: /install
+  name_prefix: "installer_"
+  trailing_slash_on_root: false
+
+# Dashboard routes
+
+app_dashboard_main:
+  resource: "../src/Controller/Dashboard/Main"
+  prefix: /{_locale}/dashboard
+  name_prefix: "dashboard_"
+  requirements:
+    _locale: "%locales%"
+  trailing_slash_on_root: false
+
+app_dashboard_admin:
+  resource: "../src/Controller/Dashboard/Administrator"
+  prefix: /{_locale}/dashboard/administrator
+  name_prefix: "dashboard_administrator_"
+  requirements:
+    _locale: "%locales%"
+  trailing_slash_on_root: false
+
+app_dashboard_organizer:
+  resource: "../src/Controller/Dashboard/Organizer"
+  prefix: /{_locale}/dashboard/organizer
+  name_prefix: "dashboard_organizer_"
+  requirements:
+    _locale: "%locales%"
+  trailing_slash_on_root: false
+
+# Change the shared controller name prefixes manually
+app_dashboard_shared:
+  resource: "../src/Controller/Dashboard/Shared"
+  prefix: /{_locale}/dashboard
+  requirements:
+    _locale: "%locales%"
+  trailing_slash_on_root: false
+
+app_dashboard_attendee:
+  resource: "../src/Controller/Dashboard/Attendee"
+  prefix: /{_locale}/dashboard/attendee
+  name_prefix: "dashboard_attendee_"
+  requirements:
+    _locale: "%locales%"
+  trailing_slash_on_root: false
+
+app_dashboard_point_of_sale:
+  resource: "../src/Controller/Dashboard/PointOfSale"
+  prefix: /{_locale}/dashboard/pointofsale
+  name_prefix: "dashboard_pointofsale_"
+  requirements:
+    _locale: "%locales%"
+  trailing_slash_on_root: false
+
+app_dashboard_scanner:
+  resource: "../src/Controller/Dashboard/Scanner"
+  prefix: /{_locale}/dashboard/scanner
+  name_prefix: "dashboard_scanner_"
+  requirements:
+    _locale: "%locales%"
+  trailing_slash_on_root: false
+
+# Front routes
+
+app_front:
+  resource: "../src/Controller/Front"
+  prefix: /{_locale}/
+  requirements:
+    _locale: "%locales%"
+  trailing_slash_on_root: false
+
+# Api routes
+
+app_api:
+  resource: "../src/Controller/Api"
+  prefix: /{_locale}/api/
+  requirements:
+    _locale: "%locales%"
+  trailing_slash_on_root: false
+
+# Bundles routes
+
+JMSTranslationBundle_ui:
+  resource: "@JMSTranslationBundle/Controller/"
+  type: annotation
+  prefix: /_trans
+
+fos_user:
+  resource: "routes/fos_user/"
+  type: directory
+  prefix: /{_locale}/
+  requirements:
+    _locale: "%locales%"
+  trailing_slash_on_root: false
+
+fos_js_routing:
+  resource: "@FOSJsRoutingBundle/Resources/config/routing/routing-sf4.xml"
+
+payum_all:
+  resource: "@PayumBundle/Resources/config/routing/all.xml"
+
+presta_sitemap:
+  resource: "@PrestaSitemapBundle/Resources/config/routing.yml"
+
+rss_atom_bundle:
+  resource: "@DebrilRssAtomBundle/Resources/config/routing.yml"
+
+_liip_imagine:
+  resource: "@LiipImagineBundle/Resources/config/routing.yaml"
+
+bazinga_js_translation:
+  resource: "@BazingaJsTranslationBundle/Resources/config/routing/routing.yml"
+
+fos_comment_api:
+  type: rest
+  resource: "@FOSCommentBundle/Resources/config/routing.yml"
+  prefix: /api
+  defaults: { _format: html }
+
+hwi_oauth_redirect:
+  resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
+  prefix: /connect
+
+hwi_oauth_connect:
+  resource: "@HWIOAuthBundle/Resources/config/routing/connect.xml"
+  prefix: /connect
+
+hwi_oauth_login:
+  resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
+  prefix: /login
+
+facebook_login:
+  path: /login/check-facebook
+
+google_login:
+  path: /login/check-google
+
+app_api_create_user:
+  path: /{_locale}/v1/ll/user-create
+  controller: 'App\Controller\Api\UserController::apiCreateUser'
+  methods: ["POST"]
+  requirements:
+    _locale: "%locales%"
+  trailing_slash_on_root: false
+
+app_api_create_user_ticket:
+  path: /{_locale}/v1/ll/user-ticket-assign
+  controller: 'App\Controller\Api\UserController::userTicketAssign'
+  methods: ["POST"]
+  requirements:
+    _locale: "%locales%"
+  trailing_slash_on_root: false
+
+google_redirect:
+  path: /google/redirect
+  controller: App\Controller\Dashboard\Shared\ApiIntegrationController::googleMeetingRedirect
+
+zoom_api_setting:
+  path: /dashboard/organizer/zoom/api/setting
+  controller: App\Controller\Dashboard\Organizer\AccountController::zoom_api_setting
+
+google_api_setting:
+  path: /dashboard/organizer/google/api/setting
+  controller: App\Controller\Dashboard\Organizer\AccountController::google_api_setting
+
+teams_api_setting:
+  path: /dashboard/organizer/teams/api/setting
+  controller: App\Controller\Dashboard\Organizer\AccountController::teams_api_setting
+
+# Chatbot routes
+chatbot_train_text:
+  path: /dashboard/organizer/chatbot_train_text
+  controller: 'App\Controller\Dashboard\ChatBot\ChatBotController::chatbot_train_text'
+  methods: ["GET"]
+
+add_chatbot_train_text:
+  path: /dashboard/organizer/add_chatbot_train_text
+  controller: 'App\Controller\Dashboard\ChatBot\ChatBotController::add_chatbot_train_text'
+  methods: ["GET"]
+
+store_chatbot_train_text:
+  path: /dashboard/organizer/store_chatbot_train_text
+  controller: 'App\Controller\Dashboard\ChatBot\ChatBotController::store_chatbot_train_text'
+  methods: ["POST"]
+
+retrain_chatbot_train_text:
+  path: /dashboard/organizer/retrain_chatbot_train_text/{chatbotId?}
+  controller: 'App\Controller\Dashboard\ChatBot\ChatBotController::retrain_chatbot_train_text'
+  methods: ["GET"]
+
+retrain_store_chatbot_train_text:
+  path: /dashboard/organizer/retrain_store_chatbot_train_text/
+  controller: 'App\Controller\Dashboard\ChatBot\ChatBotController::retrain_store_chatbot_train_text'
+  methods: ["POST"]
+
+chatbot_train_attachment:
+  path: /dashboard/organizer/chatbot_train_attachment
+  controller: 'App\Controller\Dashboard\ChatBot\ChatBotController::chatbot_train_attachment'
+  methods: ["GET"]
+
+add_chatbot_train_attachment:
+  path: /dashboard/organizer/add_chatbot_train_attachment
+  controller: 'App\Controller\Dashboard\ChatBot\ChatBotController::add_chatbot_train_attachment'
+  methods: ["GET"]
+
+store_chatbot_train_attachment:
+  path: /dashboard/organizer/store_chatbot_train_attachment
+  controller: 'App\Controller\Dashboard\ChatBot\ChatBotController::store_chatbot_train_attachment'
+  methods: ["POST"]
+
+retrain_chatbot_train_attachment:
+  path: /dashboard/organizer/retrain_chatbot_train_attachment/{chatbotId?}
+  controller: 'App\Controller\Dashboard\ChatBot\ChatBotController::retrain_chatbot_train_attachment'
+  methods: ["GET"]
+
+retrain_store_chatbot_train_attachment:
+  path: /dashboard/organizer/retrain_store_chatbot_train_attachment/
+  controller: 'App\Controller\Dashboard\ChatBot\ChatBotController::retrain_store_chatbot_train_attachment'
+  methods: ["POST"]
+
+delete_chatbot_list:
+  path: /dashboard/organizer/delete_chatbot_list/{chatbotId?}
+  controller: 'App\Controller\Dashboard\ChatBot\ChatBotController::delete_chatbot_list'
+  methods: ["GET"]
+
+chatbot_train_list:
+  path: /dashboard/organizer/chatbot_train_list
+  controller: 'App\Controller\Dashboard\ChatBot\ChatBotController::chatbot_train_list'
+  methods: ["GET"]
+
+#Chatbot routes end
+
+zoom_sdk_player:
+  path: join_event_meeting/{reference?}/{join_user_slug?}/{order_id?}
+  controller: 'App\Controller\Dashboard\ZoomSdk\ZoomSdkController::zoomSdkPlayer'
+  methods: ["GET"]
+  # defaults:
+  # ud: null
+
+send_tickets:
+  path: /dashboard/organizer/send_tickets/{event?}
+  controller: 'App\Controller\Dashboard\Shared\TicketController::sendTicket'
+  methods: ["GET"]
+
+send_ticket_csv:
+  path: /dashboard/organizer/send_ticket_csv/{event?}
+  controller: 'App\Controller\Dashboard\Shared\TicketController::sendTicketCsv'
+  methods: ["GET"]
+
+send_ticket_for_whatsapp:
+  path: /dashboard/organizer/send_ticket_for_whatsapp/{event?}
+  controller: 'App\Controller\Dashboard\Shared\TicketController::send_ticket_for_whatsapp'
+  methods: ["GET"]
+
+csv_users_list:
+  path: /dashboard/organizer/csv_users_list/{event_ref?}
+  controller: 'App\Controller\Dashboard\Shared\TicketController::csv_users_list'
+  methods: ["GET"]
+
+attending_users_list:
+  path: /dashboard/organizer/attending_users_list/{event_ref?}/{join?}
+  controller: 'App\Controller\Dashboard\Shared\TicketController::attending_users_list'
+  methods: ["GET"]
+
+attending_users_list_download:
+  path: /dashboard/organizer/attending_users_list_download/{event_ref?}/{join?}
+  controller: 'App\Controller\Dashboard\Shared\TicketController::attending_users_list_download'
+  methods: ["GET"]
+
+scanner_attending_users_list_download:
+  path: /dashboard/organizer/scanner_attending_users_list_download/{event_ref?}/{join?}
+  controller: 'App\Controller\Dashboard\Shared\TicketController::scanner_attending_users_list_download'
+  methods: ["GET"]
+
+quiz_setting:
+  path: /dashboard/organizer/quiz/setting/
+  controller: 'App\Controller\Dashboard\Quiz\QuizController::quizSetting'
+  methods: ["GET"]
+
+start_quiz:
+  path: /dashboard/organizer/start/quiz/{quiz?}
+  controller: 'App\Controller\Dashboard\Quiz\QuizController::startQuiz'
+  methods: ["GET"]
+close_quiz:
+  path: /dashboard/organizer/close/quiz/{quiz?}
+  controller: 'App\Controller\Dashboard\Quiz\QuizController::closeQuiz'
+  methods: ["GET"]
+
+order_create_payment:
+  path: /order/create-payment
+  controller: 'App\Controller\Dashboard\Shared\PaymentController::createPayment'
+  methods: ["POST"]
